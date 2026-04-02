@@ -1,6 +1,7 @@
 import Image from 'next/image'
-import { RevealText } from './RevealText'
+
 import ScrollIndicator from './ScrollIndicator'
+import AnimatedTextCycle from './AnimatedTextCycle'
 
 export default function HeroSection() {
   return (
@@ -19,19 +20,39 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-forest/60" />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-4 sm:px-6 mx-auto w-full overflow-hidden">
-        <p className="font-sans font-bold text-sage text-sm sm:text-base md:text-lg tracking-[0.2em] uppercase mb-6 sm:mb-8 animate-hero-fade-up">
-          Rooted in Craft
-        </p>
+      <div className="relative text-center px-4 sm:px-6 mx-auto w-full max-h-screen flex flex-col items-center justify-center pt-20">
 
-        {/* RevealText replaces the static h1 */}
-        <div className="mb-8 sm:mb-12">
-          <RevealText
-            text="GROUNDED"
-            textColor="text-cream"
-            overlayColor="text-sage"
-            fontSize="text-[19vw] sm:text-[20vw] md:text-[22vw]"
+        <div className="font-sans text-sage text-xs sm:text-sm md:text-base tracking-[0.2em] sm:tracking-[0.25em] uppercase mb-4 sm:mb-6 animate-hero-fade-up flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3" style={{ animationDelay: '0.1s' }}>
+          <span className="font-bold whitespace-nowrap z-40">A HOME THAT IS</span>
+          <div className="z-40">
+            <AnimatedTextCycle
+              words={["HANDCRAFTED.", "THOUGHTFULLY DESIGNED.", "PERFECTLY GROUNDED."]}
+              className="text-cream"
+              interval={3500}
+            />
+          </div>
+        </div>
+
+        {/* Text anchor */}
+        <div className="relative w-full mb-4 sm:mb-8 flex justify-center items-center">
+
+          <h1 className="text-[15vw] sm:text-[16vw] md:text-[18vw] font-display font-normal text-cream tracking-tighter leading-none uppercase relative m-0 p-0">
+            GROUNDED
+          </h1>
+
+          {/* Roots Image — adjust top/left/width to reposition */}
+          <img
+            src="/roots.png"
+            alt="Intertwining Roots"
+            className="absolute pointer-events-none mix-blend-multiply z-[9999]"
+            style={{
+              top: '-99px',      // ← move up/down (negative = up)
+              left: '50%',     // ← horizontal center
+              transform: 'translateX(-50%)',
+              width: '1400px', // ← size of the image
+            }}
           />
+
         </div>
 
         <p

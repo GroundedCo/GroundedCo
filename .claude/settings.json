@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"d:\\\\Grounded\\\\components\\\\\\\\\")",
+      "Bash(ls -la \"d:\\\\Grounded\\\\public\\\\\\\\\")",
+      "Bash(cat \"d:\\\\Grounded\\\\.claude\\\\plans\"*)",
+      "Bash(pip3 --version)",
+      "Bash(pip --version)",
+      "Bash(npx --yes vtracer --help)",
+      "Bash(npm ls:*)",
+      "Bash(npm info:*)",
+      "Bash(node trace-logo.js)"
+    ]
+  }
+}

@@ -60,7 +60,11 @@ export function RevealText({
   return (
     <div className="flex items-center justify-center relative">
       <div className="flex">
-        {text.split('').map((letter, index) => (
+        {text.split('').map((letter, index) => {
+          if (letter === ' ') {
+            return <div key={index} className="w-[35vw] md:w-[25vw] shrink-0" />
+          }
+          return (
           <span
             key={index}
             onMouseEnter={() => setHoveredIndex(index)}
@@ -121,7 +125,7 @@ export function RevealText({
               </motion.span>
             )}
           </span>
-        ))}
+        )})}
       </div>
     </div>
   )

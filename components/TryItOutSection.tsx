@@ -57,14 +57,50 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
       <div className="max-w-6xl mx-auto px-6 md:px-12">
 
         {/* Heading */}
-        <div className="mb-20 text-center">
+        <div className="mb-16 text-center">
           <p className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase mb-4">Live With It</p>
           <h2 className="font-display text-cream text-[15vw] md:text-[10vw] leading-[0.8] uppercase tracking-tighter mix-blend-overlay">
             Live With It
           </h2>
-          <p className="font-sans font-bold text-cream/70 text-sm tracking-wide mt-6 max-w-md mx-auto">
-            Every piece deserves to be felt, not just seen. Take it home for 30 days — if it doesn&apos;t feel right, we&apos;ll pick it up, no questions.
-          </p>
+        </div>
+
+        {/* The Invitation Section */}
+        <div className="max-w-5xl mx-auto mb-20 px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 text-center md:text-left mb-16">
+            <div className="flex flex-col gap-4">
+              <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
+                By Selection Only
+              </h4>
+              <p className="font-sans text-cream/70 text-sm leading-relaxed">
+                To mark our birth, we are releasing ten masterpieces: five of Maya, five of Nila. This is a private invitation to host a legacy.
+              </p>
+            </div>
+            
+            <div className="flex flex-col gap-4">
+              <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
+                The Gravity of Five
+              </h4>
+              <p className="font-sans text-cream/70 text-sm leading-relaxed">
+                Our looms move at the pace of heritage. With a hand-tufted density rarely seen in modern interiors, we restrict this release to just five homes per design.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
+                A Founding Gesture
+              </h4>
+              <p className="font-sans text-cream/70 text-sm leading-relaxed">
+                Experience the Grounded Try-Out in your sanctuary. We have set a founding rate for these pieces, a quiet gift to the first floors that carry our name.
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-center border border-sage/30 rounded-full py-6 px-8 max-w-lg mx-auto bg-sage/5 backdrop-blur-sm relative overflow-hidden group">
+            <div className="absolute inset-0 bg-sage/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+            <p className="relative z-10 font-sans font-bold text-cream text-xs md:text-sm tracking-[0.2em] uppercase">
+              Host the unseen. Before the five are gone.
+            </p>
+          </div>
         </div>
 
         {/* Product cards */}
@@ -80,7 +116,7 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
           </svg>
           <span className="font-sans font-bold text-sage/70 text-xs tracking-[0.2em] uppercase">
-            Thoughtfully Shipped · Natural Materials · 30-Day Comfort Guarantee
+            Thoughtfully Shipped · Natural Materials
           </span>
         </div>
       </div>

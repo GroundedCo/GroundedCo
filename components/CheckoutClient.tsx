@@ -107,9 +107,14 @@ export default function CheckoutClient({ product }: CheckoutClientProps) {
           </span>
         </div>
 
-        <button className="w-full font-sans text-xs tracking-[0.2em] uppercase bg-deep-obsidian text-wool-white py-4 hover:bg-muted-earth transition-colors duration-300">
+        <a
+          href={product.price === 14399 ? 'https://rzp.io/rzp/o6tCwlDQ' : 'https://rzp.io/rzp/6bOtGS7'}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block w-full text-center font-sans text-xs tracking-[0.2em] uppercase bg-deep-obsidian text-wool-white py-4 hover:bg-muted-earth transition-colors duration-300"
+        >
           Place Order — {formatINR(product.price * quantity)}
-        </button>
+        </a>
 
         <p className="font-sans text-deep-obsidian/30 text-xs text-center tracking-wider">
           Secure checkout · All taxes included · EMI available
