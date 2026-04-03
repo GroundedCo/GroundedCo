@@ -2,6 +2,7 @@ import Image from 'next/image'
 
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
+import { RevealText } from './RevealText'
 
 export default function HeroSection() {
   return (
@@ -34,11 +35,8 @@ export default function HeroSection() {
         </div>
 
         {/* Text anchor */}
-        <div className="relative w-full mb-4 sm:mb-8 flex justify-center items-center">
-
-          <h1 className="text-[15vw] sm:text-[16vw] md:text-[18vw] font-display font-normal text-cream tracking-tighter leading-none uppercase relative m-0 p-0">
-            GROUNDED
-          </h1>
+        <div className="relative w-full mb-4 sm:mb-8">
+          <RevealText />
         </div>
 
         <p

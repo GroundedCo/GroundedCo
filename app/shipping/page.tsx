@@ -136,10 +136,9 @@ export default async function ShippingPage() {
 
       {/* Trust strip */}
       <section className="bg-forest py-16">
-        <div className="max-w-4xl mx-auto px-6 md:px-12 grid grid-cols-1 sm:grid-cols-3 gap-10 text-center">
+        <div className="max-w-4xl mx-auto px-6 md:px-12 grid grid-cols-1 sm:grid-cols-2 gap-10 text-center">
           {[
             { label: 'Free Shipping', desc: 'Across all of India, on every order.' },
-            { label: '30-Day Returns', desc: 'No questions asked. Free reverse pickup.' },
             { label: 'Secure Packaging', desc: 'Roll-packed and protected for safe delivery.' },
           ].map((item) => (
             <div key={item.label}>

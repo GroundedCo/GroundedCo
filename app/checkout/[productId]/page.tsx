@@ -151,17 +151,20 @@ export default async function CheckoutPage({
       {/* Bottom trust section */}
       <section className="bg-deep-obsidian py-16">
         <div className="max-w-7xl mx-auto px-6 md:px-16 flex justify-center">
-          <div className="max-w-md text-center">
+          <div className="max-w-lg text-center">
             <div className="text-muted-earth mb-4 flex justify-center">
               <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.078-.502 1.078-1.121a.997.997 0 00-.222-.626l-2.847-3.37a1.5 1.5 0 00-1.134-.513H13.5m-3 4.5V6.75a.75.75 0 01.75-.75h5.507a1.5 1.5 0 011.29.743l2.86 4.771A1.5 1.5 0 0121 12.115V14.25" />
               </svg>
             </div>
             <h3 className="font-serif text-wool-white text-2xl font-light mb-3">
-              Free Delivery Across Keralam
+              We Deliver It Ourselves, Across Keralam
             </h3>
-            <p className="font-sans text-wool-white/60 text-sm leading-relaxed">
-              Complimentary shipping to any home in Keralam. Professional unrolling and placement in your room of choice.
+            <p className="font-sans text-wool-white/60 text-sm leading-relaxed mb-4">
+              If you're in Keralam, we don't hand this off to a courier. We bring it to your door ourselves, carefully rolled, personally carried, and placed exactly where you want it.
+            </p>
+            <p className="font-sans text-muted-earth text-xs tracking-[0.15em] uppercase">
+              Complimentary · No third-party handling · Your room, your way
             </p>
           </div>
         </div>

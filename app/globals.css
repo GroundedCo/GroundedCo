@@ -12,7 +12,8 @@
   --color-muted-earth: #7d5a3c;
 
   --font-display: var(--font-anton), 'Anton', sans-serif;
-  --font-sans: var(--font-inter), 'Inter', sans-serif;
+  --font-sans: var(--font-hind-siliguri), 'Hind Siliguri', sans-serif;
+  --font-serif: var(--font-heebo), 'Heebo', sans-serif;
 
   --shadow-2xl: 0 25px 50px -12px rgba(1, 71, 46, 0.2);
 
@@ -87,10 +88,14 @@
   html {
     scroll-behavior: smooth;
     -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-cream text-forest font-sans bg-fixed relative transition-colors duration-500 ease-in-out;
+    @apply bg-cream text-forest font-sans relative transition-colors duration-500 ease-in-out;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
   }
 }
 

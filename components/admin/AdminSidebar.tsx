@@ -63,7 +63,7 @@ function TopRightBar() {
   }
 
   return (
-    <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+    <div className="hidden lg:flex fixed top-4 right-4 z-50 items-center gap-2">
       <Link
         href="/"
         className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-sans font-bold tracking-wide text-cream/60 bg-forest/80 hover:text-cream hover:bg-forest border border-cream/10 transition-colors"
@@ -134,6 +134,27 @@ export default function AdminSidebar() {
           </svg>
         </button>
         <SidebarContent onNavigate={() => setOpen(false)} />
+        {/* Mobile-only bottom actions */}
+        <div className="px-4 py-5 border-t border-cream/10 flex items-center gap-2">
+          <Link
+            href="/"
+            onClick={() => setOpen(false)}
+            className="flex-1 text-center px-3 py-2 rounded-lg text-xs font-sans font-bold tracking-wide text-cream/60 bg-forest hover:text-cream border border-cream/10 transition-colors"
+          >
+            ← View Store
+          </Link>
+          <button
+            onClick={async () => {
+              const { createClient } = await import('@/lib/supabase/client')
+              const supabase = createClient()
+              await supabase.auth.signOut()
+              window.location.href = '/admin/login'
+            }}
+            className="flex-1 px-3 py-2 rounded-lg text-xs font-sans font-bold tracking-wide text-cream/60 hover:text-red-300 hover:bg-red-500/20 border border-cream/10 transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
       </aside>
     </>
   )

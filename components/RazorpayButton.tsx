@@ -14,11 +14,12 @@ declare global {
 
 interface RazorpayButtonProps {
   product: FeaturedProduct
+  quantity?: number
   className?: string
   children?: React.ReactNode
 }
 
-export default function RazorpayButton({ product, className = '', children }: RazorpayButtonProps) {
+export default function RazorpayButton({ product, quantity = 1, className = '', children }: RazorpayButtonProps) {
   const [loading, setLoading] = useState(false)
 
   const handlePayment = async () => {
@@ -29,7 +30,7 @@ export default function RazorpayButton({ product, className = '', children }: Ra
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount:    product.price * 100,   // convert to paise
+          amount:    product.price * quantity * 100,   // convert to paise
           productId: product.id,
         }),
       })
@@ -49,10 +50,28 @@ export default function RazorpayButton({ product, className = '', children }: Ra
         name:        'Grounded',
         description: product.name,
         order_id:    order.id,
-        handler: (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
-          // TODO: verify signature on your server before fulfilling the order
-          console.log('Payment captured:', response.razorpay_payment_id)
+        handler: async (response: { razorpay_payment_id: string; razorpay_order_id: string; razorpay_signature: string }) => {
+          try {
+            const confirmRes = await fetch('/api/orders/confirm', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                paymentId: response.razorpay_payment_id,
+                orderId:   response.razorpay_order_id,
+                signature: response.razorpay_signature,
+                productId: product.id,
+                quantity,
+              }),
+            })
+            if (!confirmRes.ok) {
+              const { error } = await confirmRes.json()
+              console.error('Order confirm failed:', error)
+            }
+          } catch (err) {
+            console.error('Order confirm error:', err)
+          }
           alert(`Payment successful! ID: ${response.razorpay_payment_id}`)
+          setLoading(false)
         },
         prefill: {
           name:    '',

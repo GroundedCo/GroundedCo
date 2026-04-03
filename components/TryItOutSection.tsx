@@ -1,10 +1,20 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useState, useEffect, useRef } from 'react'
 import type { FeaturedProduct } from '@/data/products'
 
 
 
 function ProductCard({ product }: { product: FeaturedProduct }) {
+  const allPhotos = [product.image, ...product.photos].filter(Boolean)
+  const [photoIndex, setPhotoIndex] = useState(0)
+
+  function handleImageClick() {
+    setPhotoIndex((prev) => (prev + 1) % allPhotos.length)
+  }
+
   return (
     <div className="group relative bg-cream flex flex-col rounded-[2.5rem] overflow-hidden border border-forest/10 hover:border-sage transition-colors duration-300 shadow-2xl relative z-20">
       {/* Badge */}
@@ -16,14 +26,28 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
 
       {/* Product image */}
       <div className="p-4 pt-12 pb-0">
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] animate-float shadow-2xl">
+        <div
+          className="relative aspect-[4/3] w-full overflow-hidden rounded-[2rem] animate-float shadow-2xl cursor-pointer"
+          onClick={allPhotos.length > 1 ? handleImageClick : undefined}
+          title={allPhotos.length > 1 ? 'Click to see more photos' : undefined}
+        >
           <Image
-            src={product.image}
+            src={allPhotos[photoIndex]}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover transition-transform duration-700 group-hover:scale-105"
           />
+          {allPhotos.length > 1 && (
+            <div className="absolute bottom-3 right-3 flex gap-1.5">
+              {allPhotos.map((_, i) => (
+                <span
+                  key={i}
+                  className={`block w-1.5 h-1.5 rounded-full transition-colors duration-300 ${i === photoIndex ? 'bg-cream' : 'bg-cream/40'}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -52,6 +76,20 @@ interface TryItOutSectionProps {
 }
 
 export default function TryItOutSection({ products }: TryItOutSectionProps) {
+  const pillRef = useRef<HTMLDivElement>(null)
+  const [fillActive, setFillActive] = useState(false)
+
+  useEffect(() => {
+    const el = pillRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setFillActive(true) },
+      { threshold: 0.2 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section className="py-24 bg-forest rounded-[5rem] mx-4 mb-24 shadow-2xl" id="try-it-out">
       <div className="max-w-6xl mx-auto px-6 md:px-12">
@@ -95,8 +133,11 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
             </div>
           </div>
 
-          <div className="text-center border border-sage/30 rounded-full py-6 px-8 max-w-lg mx-auto bg-sage/5 backdrop-blur-sm relative overflow-hidden group">
-            <div className="absolute inset-0 bg-sage/10 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out" />
+          <div ref={pillRef} className="text-center border border-sage/30 rounded-full py-6 px-8 max-w-lg mx-auto bg-sage/5 backdrop-blur-sm relative overflow-hidden group">
+            <div
+              className="absolute inset-0 bg-sage/10 transition-transform duration-700 ease-out"
+              style={{ transform: fillActive ? 'translateY(0%)' : 'translateY(100%)' }}
+            />
             <p className="relative z-10 font-sans font-bold text-cream text-xs md:text-sm tracking-[0.2em] uppercase">
               Host the unseen. Before the five are gone.
             </p>

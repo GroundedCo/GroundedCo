@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Anton, Inter } from 'next/font/google'
+import { Anton, Heebo, Hind_Siliguri } from 'next/font/google'
 import './globals.css'
 
 const anton = Anton({
@@ -9,10 +9,17 @@ const anton = Anton({
   display: 'swap',
 })
 
-const inter = Inter({
+const heebo = Heebo({
   subsets: ['latin'],
-  weight: ['400', '700'],
-  variable: '--font-inter',
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-heebo',
+  display: 'swap',
+})
+
+const hindSiliguri = Hind_Siliguri({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-hind-siliguri',
   display: 'swap',
 })
 
@@ -27,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${anton.variable} ${inter.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
+    <html lang="en" className={`${anton.variable} ${heebo.variable} ${hindSiliguri.variable}`} data-scroll-behavior="smooth" suppressHydrationWarning>
       <body>
         {children}
         {/* Noise texture overlay — real element so pointer-events: none actually works on mobile */}

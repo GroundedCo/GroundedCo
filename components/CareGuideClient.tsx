@@ -3,12 +3,22 @@
 import { useState } from 'react'
 import type { FeaturedProduct } from '@/data/products'
 
+const CARE_ITEMS = [
+  { title: 'Professional Care', body: 'For deep cleaning, professional dry cleaning is recommended to maintain the integrity of the natural fibers.' },
+  { title: 'Routine Maintenance', body: 'Vacuum your rug regularly. Use a suction-only setting and avoid the beater bar, which can stress the delicate weave.' },
+  { title: 'Spill Response', body: 'Act quickly. Blot (do not rub) immediately with a clean, dry cloth.' },
+  { title: 'Balanced Living', body: 'Rotate your rug every 6 months to ensure even wear and prevent specific areas from bearing more traffic than others.' },
+  { title: 'Light Sensitivity', body: 'To preserve the rich, natural dyes, avoid placing your rug in direct, harsh sunlight.' },
+  { title: 'The Nature of Yarn', body: 'Shedding is a natural characteristic of high-quality yarn — a sign of its organic origin, not a defect. Regular vacuuming will manage this over time.' },
+]
+
 interface CareGuideClientProps {
   product: FeaturedProduct
 }
 
 export default function CareGuideClient({ product }: CareGuideClientProps) {
   const [activeTab, setActiveTab] = useState<'care' | 'delivery'>('care')
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const tabs = [
     { key: 'care' as const, label: 'Care Guide' },
@@ -35,16 +45,33 @@ export default function CareGuideClient({ product }: CareGuideClientProps) {
       </div>
 
       {/* Tab content */}
-      <div className="py-6 px-6">
+      <div className="py-3 px-6">
         {activeTab === 'care' && (
-          <ul className="space-y-3">
-            {product.careInstructions.map((instruction, i) => (
-              <li key={i} className="flex items-start gap-3 font-sans text-deep-obsidian/70 text-sm">
-                <span className="text-muted-earth mt-0.5 shrink-0 text-xs">●</span>
-                {instruction}
-              </li>
+          <div>
+            <p className="font-sans text-deep-obsidian/50 text-xs leading-relaxed italic py-3 border-b border-deep-obsidian/10">
+              To preserve the life and soul of your handcrafted piece, we recommend the following rituals:
+            </p>
+            {CARE_ITEMS.map(({ title, body }, i) => (
+              <div key={title} className="border-b border-deep-obsidian/10 last:border-0">
+                <button
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  className="w-full flex items-center justify-between py-3 text-left gap-4"
+                >
+                  <span className="font-sans text-xs font-semibold tracking-[0.1em] uppercase text-deep-obsidian">
+                    {title}
+                  </span>
+                  <span className={`text-deep-obsidian/40 text-xs shrink-0 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}>
+                    ▾
+                  </span>
+                </button>
+                {openIndex === i && (
+                  <p className="font-sans text-deep-obsidian/60 text-xs leading-relaxed pb-3 -mt-1">
+                    {body}
+                  </p>
+                )}
+              </div>
             ))}
-          </ul>
+          </div>
         )}
 
         {activeTab === 'delivery' && (

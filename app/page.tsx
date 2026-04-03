@@ -1,4 +1,4 @@
-import HeroSection      from '@/components/HeroSection'
+import ScrollSequenceHero from '@/components/ScrollSequenceHero'
 import InfiniteCarousel from '@/components/InfiniteCarousel'
 import TryItOutSection  from '@/components/TryItOutSection'
 import SubFooter        from '@/components/SubFooter'
@@ -14,7 +14,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <HeroSection />
+      <ScrollSequenceHero />
       <InfiniteCarousel products={carouselProducts} />
       <TryItOutSection products={featuredProducts} />
       <SubFooter />
