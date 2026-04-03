@@ -39,20 +39,6 @@ export default function HeroSection() {
           <h1 className="text-[15vw] sm:text-[16vw] md:text-[18vw] font-display font-normal text-cream tracking-tighter leading-none uppercase relative m-0 p-0">
             GROUNDED
           </h1>
-
-          {/* Roots Image — adjust top/left/width to reposition */}
-          <img
-            src="/roots.png"
-            alt="Intertwining Roots"
-            className="absolute pointer-events-none mix-blend-multiply z-[9999]"
-            style={{
-              top: '-99px',      // ← move up/down (negative = up)
-              left: '50%',     // ← horizontal center
-              transform: 'translateX(-50%)',
-              width: '1400px', // ← size of the image
-            }}
-          />
-
         </div>
 
         <p

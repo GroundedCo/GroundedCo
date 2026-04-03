@@ -8,9 +8,10 @@ interface ImageUploadProps {
   currentUrl?: string
   onUpload: (url: string) => void
   folder?: string
+  resetAfterUpload?: boolean
 }
 
-export default function ImageUpload({ currentUrl, onUpload, folder = 'products' }: ImageUploadProps) {
+export default function ImageUpload({ currentUrl, onUpload, folder = 'products', resetAfterUpload = false }: ImageUploadProps) {
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState(currentUrl || '')
   const [dragOver, setDragOver] = useState(false)
@@ -32,7 +33,11 @@ export default function ImageUpload({ currentUrl, onUpload, folder = 'products' 
         .from('product-images')
         .getPublicUrl(fileName)
 
-      setPreview(publicUrl)
+      if (!resetAfterUpload) {
+        setPreview(publicUrl)
+      } else {
+        setPreview('')
+      }
       onUpload(publicUrl)
     } catch (err) {
       console.error('Upload failed:', err)

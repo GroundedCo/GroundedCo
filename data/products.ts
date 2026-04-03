@@ -18,9 +18,12 @@ export interface CarouselProduct {
 export interface FeaturedProduct {
   id: string
   name: string
+  malayalamName?: string
   subtitle: string
   price: number
   image: string
+  photos: string[]
+  secondaryImage?: string
   badge?: string
   description: string
   material: string
@@ -95,11 +98,14 @@ const FALLBACK_CAROUSEL: CarouselProduct[] = [
 export const FALLBACK_FEATURED: FeaturedProduct[] = [
   {
     id: 'fp-atlas',
-    name: 'Atlas Hand-Knotted',
-    subtitle: '200 × 300 cm · Pure New Wool',
-    price: 24999,
-    image: 'https://images.unsplash.com/photo-1600166898405-da9535204843?w=800&q=90&fm=webp',
-    badge: 'Best Seller',
+    name: 'Maya',
+    malayalamName: 'മായ',
+    subtitle: '91.44 × 152.4 cm . Pure imported Yarn',
+    price: 8999,
+    image: '/maya_topdown_v2.jpg',
+    photos: ['/maya_organic_v2.jpg'],
+    secondaryImage: '/maya_organic_v2.jpg',
+    badge: 'Maya Edition',
     description: 'A masterpiece of traditional craftsmanship, the Atlas Hand-Knotted rug is woven by skilled artisans using time-honoured techniques passed down through generations.',
     material: 'Pure New Zealand Wool',
     dimensions: '200 × 300 cm (6.6 × 9.8 ft)',
@@ -113,11 +119,13 @@ export const FALLBACK_FEATURED: FeaturedProduct[] = [
   },
   {
     id: 'fp-ember',
-    name: 'Ember Flatweave',
-    subtitle: '160 × 230 cm · Cotton-Jute Blend',
+    name: 'Nila',
+    malayalamName: 'നിലാ',
+    subtitle: '121.92 × 182.88 CM . Sustainable',
     price: 12499,
-    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=800&q=90&fm=webp',
-    badge: 'New Arrival',
+    image: '/nila_kerala.png',
+    photos: [],
+    badge: 'Nila Edition',
     description: 'The Ember Flatweave brings a contemporary edge to any room with its clean lines and earthy palette.',
     material: '60% Cotton, 40% Natural Jute',
     dimensions: '160 × 230 cm (5.2 × 7.5 ft)',
@@ -185,9 +193,11 @@ export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
     return data.map((row) => ({
       id: row.id,
       name: row.name,
+      malayalamName: row.malayalam_name,
       subtitle: row.subtitle ?? '',
       price: row.price,
       image: row.image,
+      photos: row.photos || [],
       badge: row.badge || undefined,
       description: row.description ?? '',
       material: row.material ?? '',
@@ -229,9 +239,11 @@ export async function getFeaturedProductById(productId: string): Promise<Feature
     return {
       id: data.id,
       name: data.name,
+      malayalamName: data.malayalam_name,
       subtitle: data.subtitle ?? '',
       price: data.price,
       image: data.image,
+      photos: data.photos || [],
       badge: data.badge || undefined,
       description: data.description ?? '',
       material: data.material ?? '',

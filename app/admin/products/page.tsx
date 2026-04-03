@@ -11,6 +11,7 @@ interface ProductRow {
   subtitle: string
   price: number
   image: string
+  photos: string[]
   badge: string
   description: string
   material: string
@@ -75,6 +76,7 @@ export default function AdminProductsPage() {
     subtitle: '',
     price: 0,
     image: '',
+    photos: [],
     badge: '',
     description: '',
     material: '',
@@ -119,6 +121,42 @@ export default function AdminProductsPage() {
             <div>
               <label className="block font-sans font-bold text-forest/50 text-xs tracking-[0.15em] uppercase mb-2">Product Image</label>
               <ImageUpload currentUrl={editing.image} onUpload={(url) => setEditing({ ...editing, image: url })} folder="featured" />
+            </div>
+
+            {/* Gallery Photos */}
+            <div className="bg-cream rounded-2xl border border-forest/10 p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-display text-forest text-lg uppercase tracking-tighter">Gallery Photos</h3>
+                <span className="font-sans text-forest/30 text-xs">{editing.photos.length} photo{editing.photos.length !== 1 ? 's' : ''}</span>
+              </div>
+
+              {/* Existing photos grid */}
+              {editing.photos.length > 0 && (
+                <div className="grid grid-cols-3 gap-2">
+                  {editing.photos.map((url, i) => (
+                    <div key={url + i} className="relative group aspect-square overflow-hidden rounded-lg border border-forest/10">
+                      <Image src={url} alt={`Gallery ${i + 1}`} fill className="object-cover" sizes="120px" />
+                      <button
+                        onClick={() => setEditing({ ...editing, photos: editing.photos.filter((_, idx) => idx !== i) })}
+                        className="absolute inset-0 bg-red-600/80 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center font-sans font-bold text-xs"
+                        aria-label={`Remove photo ${i + 1}`}
+                      >
+                        ✕ Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div>
+                <label className="block font-sans font-bold text-forest/50 text-xs tracking-[0.15em] uppercase mb-2">+ Add Photo</label>
+                <ImageUpload
+                  currentUrl=""
+                  onUpload={(url) => setEditing({ ...editing, photos: [...editing.photos, url] })}
+                  folder="featured"
+                  resetAfterUpload
+                />
+              </div>
             </div>
 
             <div className="bg-cream rounded-2xl border border-forest/10 p-6 space-y-4">

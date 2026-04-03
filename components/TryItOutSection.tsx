@@ -30,7 +30,7 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
       {/* Details */}
       <div className="p-8 flex flex-col gap-4 flex-1">
         <div>
-          <h3 className="font-display text-forest text-4xl uppercase tracking-tighter mb-2">{product.name}</h3>
+          <h3 itemProp="name" className="font-display text-forest text-4xl uppercase tracking-tighter mb-2">{product.malayalamName || product.name}</h3>
           <p className="font-sans font-bold text-forest/50 text-sm tracking-wide">{product.subtitle}</p>
         </div>
 
@@ -58,9 +58,9 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
 
         {/* Heading */}
         <div className="mb-16 text-center">
-          <p className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase mb-4">Live With It</p>
+          <p className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase mb-4">Why Grounded Try Out</p>
           <h2 className="font-display text-cream text-[15vw] md:text-[10vw] leading-[0.8] uppercase tracking-tighter mix-blend-overlay">
-            Live With It
+            Why Grounded Try Out
           </h2>
         </div>
 

@@ -1,8 +1,10 @@
 import { notFound } from 'next/navigation'
-import Image from 'next/image'
 import Link from 'next/link'
 import { getFeaturedProductById } from '@/data/products'
 import CheckoutClient from '@/components/CheckoutClient'
+import ImageSlideshow from '@/components/ImageSlideshow'
+import AnimatedPrice from '@/components/AnimatedPrice'
+import CareGuideClient from '@/components/CareGuideClient'
 
 function formatINR(amount: number): string {
   return new Intl.NumberFormat('en-IN', {
@@ -46,23 +48,16 @@ export default async function CheckoutPage({
       {/* Hero product section */}
       <section className="max-w-7xl mx-auto px-6 md:px-16 pt-12 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-          {/* Left: Product image */}
+          {/* Left: Product image slideshow + Care Guide */}
           <div className="space-y-4">
-            <div className="relative aspect-square w-full overflow-hidden bg-deep-obsidian/5">
-              {product.badge && (
-                <span className="absolute top-5 left-5 z-10 font-sans text-xs tracking-widest uppercase bg-muted-earth text-wool-white px-4 py-1.5">
-                  {product.badge}
-                </span>
-              )}
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-                priority
-              />
-            </div>
+            <ImageSlideshow
+              images={[product.image, ...(product.photos ?? [])]}
+              alt={product.name}
+              badge={product.badge}
+            />
+
+            {/* Care Guide / Delivery tabs */}
+            <CareGuideClient product={product} />
 
             {/* Trust strip */}
             <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 py-4 border border-deep-obsidian/10">
@@ -79,13 +74,6 @@ export default async function CheckoutPage({
                 </svg>
                 <span className="font-sans text-xs tracking-wider uppercase">Free Shipping</span>
               </div>
-              <div className="hidden sm:block w-px h-4 bg-deep-obsidian/10" />
-              <div className="flex items-center gap-2 text-deep-obsidian/40">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
-                </svg>
-                <span className="font-sans text-xs tracking-wider uppercase">30-Day Returns</span>
-              </div>
             </div>
           </div>
 
@@ -101,18 +89,8 @@ export default async function CheckoutPage({
             </h1>
             <p className="font-sans text-deep-obsidian/50 text-sm mb-6">{product.subtitle}</p>
 
-            {/* Price */}
-            <div className="flex items-baseline gap-3 mb-6 pb-6 border-b border-deep-obsidian/10">
-              <span className="font-sans text-deep-obsidian text-3xl font-medium">
-                {formatINR(product.price)}
-              </span>
-              <span className="font-sans text-deep-obsidian/30 text-sm line-through">
-                {formatINR(Math.round(product.price * 1.3))}
-              </span>
-              <span className="font-sans text-xs tracking-wider uppercase bg-green-100 text-green-700 px-2 py-0.5 ml-2">
-                30% Off
-              </span>
-            </div>
+            {/* Animated Price */}
+            <AnimatedPrice price={product.price} />
 
             {/* Description */}
             <p className="font-sans text-deep-obsidian/70 text-sm leading-relaxed mb-8">

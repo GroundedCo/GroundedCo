@@ -26,21 +26,21 @@ export function RevealText({
   springDuration = 600,
   letterImages = [
     // G
-    '/images/yarn/yarn_green_1774982932059.png',
+    '/images/wool_process/1_shearing.png',
     // R
-    '/images/yarn/yarn_red_1774982950893.png',
+    '/images/wool_process/2_cleaning.png',
     // O
-    '/images/yarn/yarn_blue_1774982912108.png',
+    '/images/wool_process/3_carding.png',
     // U
-    '/images/yarn/yarn_white_1774983047846.png',
+    '/images/wool_process/4_rovings.png',
     // N
-    '/images/yarn/yarn_yellow_1774982969717.png',
+    '/images/wool_process/5_spinning.png',
     // D
-    '/images/yarn/yarn_orange_1774982989035.png',
+    '/images/wool_process/6_yarn.png',
     // E
-    '/images/yarn/yarn_pink_1774983009532.png',
+    '/images/wool_process/4_rovings.png',
     // D
-    '/images/yarn/yarn_purple_1774983031343.png',
+    '/images/wool_process/6_yarn.png',
   ],
 }: RevealTextProps) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)

@@ -1,6 +1,12 @@
 export default function SubFooter() {
   const year = new Date().getFullYear()
 
+  const links = [
+    { label: 'Contact', href: '/contact' },
+    { label: 'Privacy', href: '/privacy' },
+    { label: 'Shipping', href: '/shipping' },
+  ]
+
   return (
     <footer className="py-8 px-6 bg-transparent border-t border-forest/10">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
@@ -11,13 +17,13 @@ export default function SubFooter() {
 
         {/* Links */}
         <nav className="flex items-center gap-6">
-          {['Contact', 'Privacy', 'Shipping'].map((link) => (
+          {links.map((link) => (
             <a
-              key={link}
-              href={`#${link.toLowerCase()}`}
+              key={link.label}
+              href={link.href}
               className="font-sans font-bold text-forest/50 text-xs tracking-[0.2em] uppercase hover:text-forest transition-colors duration-200"
             >
-              {link}
+              {link.label}
             </a>
           ))}
         </nav>
