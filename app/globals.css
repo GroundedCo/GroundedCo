@@ -107,6 +107,12 @@
   }
 }
 
+@layer utilities {
+  .bg-gradient-radial {
+    background: radial-gradient(var(--tw-gradient-stops));
+  }
+}
+
 /* ─── Noise Texture Overlay ─────────────────────────── */
 .noise-overlay {
   position: fixed;
