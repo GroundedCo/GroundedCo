@@ -17,7 +17,7 @@ function StarRating({ rating }: { rating: number }) {
       {Array.from({ length: 5 }).map((_, i) => (
         <svg
           key={i}
-          className={`w-4 h-4 ${i < rating ? 'text-sage' : 'text-forest/20'}`}
+          className={`w-4 h-4 ${i < rating ? 'text-[#FBBC05]' : 'text-forest/20'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >
@@ -153,15 +153,6 @@ export default function ProductModal({ product, onClose }: ProductModalProps) {
                     </div>
                   </div>
                 </div>
-              </div>
-              {/* Sticky purchase CTA */}
-              <div className="sticky bottom-0 bg-cream border-t border-forest/10 px-8 py-5 flex justify-end">
-                <Link
-                  href={`/checkout/${product.id}`}
-                  className="font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest text-cream px-10 py-4 rounded-[2.5rem] hover:bg-sage hover:text-forest transition-colors duration-300"
-                >
-                  Bring It Home
-                </Link>
               </div>
             </div>
           </motion.div>

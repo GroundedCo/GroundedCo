@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Home, Leaf } from 'lucide-react'
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
 import { RevealText } from './RevealText'
-
 // ─── Frame config ─────────────────────────────────────────────
 const FIRST_FRAME = 240
 const LAST_FRAME = 1
@@ -14,13 +15,15 @@ const SEQUENCE_HEIGHT = FRAME_COUNT * SCROLL_PER_FRAME
 
 const FRAME_URLS: string[] = Array.from({ length: FRAME_COUNT }, (_, i) => {
   const n = FIRST_FRAME - i // 240, 239, … 1
-  return `/assets/ezgif-frame-${String(n).padStart(3, '0')}.jpg`
+  return `https://uettnudsxjyhepzlhryd.supabase.co/storage/v1/object/public/product-images/animation-frames/ezgif-frame-${String(n).padStart(3, '0')}.webp`
 })
+
 
 export default function ScrollSequenceHero() {
   const sectionRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imagesRef = useRef<HTMLImageElement[]>([])
+  const router = useRouter()
 
   // Float frame position for smooth lerping
   const currentFrameRef = useRef(0)
@@ -164,6 +167,7 @@ export default function ScrollSequenceHero() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
+
   return (
     <section
       ref={sectionRef}
@@ -223,6 +227,7 @@ export default function ScrollSequenceHero() {
             </a>
           </div>
         </div>
+
 
         <ScrollIndicator />
       </div>
