@@ -6,6 +6,8 @@ import { Home, Leaf } from 'lucide-react'
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
 import { RevealText } from './RevealText'
+import { MenuBar } from '@/components/ui/glow-menu'
+
 // ─── Frame config ─────────────────────────────────────────────
 const FIRST_FRAME = 240
 const LAST_FRAME = 1
@@ -15,14 +17,33 @@ const SEQUENCE_HEIGHT = FRAME_COUNT * SCROLL_PER_FRAME
 
 const FRAME_URLS: string[] = Array.from({ length: FRAME_COUNT }, (_, i) => {
   const n = FIRST_FRAME - i // 240, 239, … 1
-  return `https://uettnudsxjyhepzlhryd.supabase.co/storage/v1/object/public/product-images/animation-frames/ezgif-frame-${String(n).padStart(3, '0')}.webp`
+  return `/assets/ezgif-frame-${String(n).padStart(3, '0')}.jpg`
 })
 
+const menuItems = [
+  {
+    icon: Home,
+    label: 'Home',
+    href: '/',
+    gradient:
+      'radial-gradient(circle, rgba(154, 204, 98, 0.16) 0%, rgba(141, 163, 90, 0.08) 50%, rgba(74, 85, 30, 0) 100%)',
+    iconColor: 'text-sage',
+  },
+  {
+    icon: Leaf,
+    label: 'Enter the Quiet',
+    href: '/enter-the-quiet',
+    gradient:
+      'radial-gradient(circle, rgba(255, 241, 208, 0.2) 0%, rgba(254, 243, 199, 0.1) 50%, rgba(254, 243, 199, 0) 100%)',
+    iconColor: 'text-cream',
+  },
+]
 
 export default function ScrollSequenceHero() {
   const sectionRef = useRef<HTMLElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imagesRef = useRef<HTMLImageElement[]>([])
+  const [menuOpacity, setMenuOpacity] = useState(1)
   const router = useRouter()
 
   // Float frame position for smooth lerping
@@ -167,11 +188,16 @@ export default function ScrollSequenceHero() {
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
+  const activeItem = 'Home'
+
+  const handleMenuClick = (label: string) => {
+    const item = menuItems.find((menuItem) => menuItem.label === label)
+    if (item) router.push(item.href)
+  }
 
   return (
     <section
       ref={sectionRef}
-      data-nav-theme="dark"
       style={{ height: `calc(${SEQUENCE_HEIGHT}px + 100vh)` }}
       className="relative"
     >
@@ -229,6 +255,19 @@ export default function ScrollSequenceHero() {
           </div>
         </div>
 
+        <div className="absolute inset-x-0 top-8 z-30 pointer-events-none">
+          <div
+            className="mx-auto w-full max-w-md px-4 pointer-events-auto"
+            style={{ opacity: menuOpacity, transition: 'opacity 220ms ease-out' }}
+          >
+            <MenuBar
+              items={menuItems}
+              activeItem={activeItem}
+              onItemClick={handleMenuClick}
+              className="mx-auto"
+            />
+          </div>
+        </div>
 
         <ScrollIndicator />
       </div>

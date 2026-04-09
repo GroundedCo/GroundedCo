@@ -1,4 +1,4 @@
-import ScrollSequenceHero from '@/components/ScrollSequenceHero'
+import HeroSection from '@/components/HeroSection'
 import InfiniteCarousel from '@/components/InfiniteCarousel'
 import TryItOutSection  from '@/components/TryItOutSection'
 import SubFooter        from '@/components/SubFooter'
@@ -9,7 +9,7 @@ import {
   type FeaturedProduct,
 } from '@/data/products'
 
-export const revalidate = 60 // ISR: refresh every 60 seconds
+export const revalidate = 3600 // ISR: refresh every hour
 
 export default async function Home() {
   let carouselProducts: CarouselProduct[] = []
@@ -29,7 +29,7 @@ export default async function Home() {
 
   return (
     <main className="min-h-screen">
-      <ScrollSequenceHero />
+      <HeroSection />
       <InfiniteCarousel products={carouselProducts} />
       <TryItOutSection products={featuredProducts} />
       <SubFooter />

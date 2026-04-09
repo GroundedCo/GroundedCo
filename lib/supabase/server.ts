@@ -26,7 +26,11 @@ export function createAnonServerClient() {
     {
       global: {
         fetch: (url, options = {}) =>
-          fetch(url, { ...options, signal: AbortSignal.timeout(4000) }),
+          fetch(url, {
+            ...options,
+            signal: AbortSignal.timeout(4000),
+            next: { revalidate: 3600 },
+          } as RequestInit),
       },
     }
   )

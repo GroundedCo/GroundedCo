@@ -20,7 +20,19 @@
       "Bash(npm run:*)",
       "Bash(ls d:/Grounded/public/*.jpg d:/Grounded/public/*.png)",
       "Bash(npx next:*)",
-      "Bash(npx tsc:*)"
+      "Bash(npx tsc:*)",
+      "Bash(du -sh /d/Grounded/.next/cache/*)",
+      "Bash(du -sh /d/Grounded/*)",
+      "Bash(find /d/Grounded -maxdepth 1 -type d -exec du -sh {} \\\\;)",
+      "Bash(find /d/Grounded/app -type f \\\\\\( -name \"*.tsx\" -o -name \"*.ts\" \\\\\\) -exec grep -l \"fetch\" {} \\\\;)",
+      "Bash(xargs ls:*)",
+      "Bash(find /d/Grounded/.next/dev -maxdepth 2 -type d -exec du -sh {} \\\\;)",
+      "Bash(find /d/Grounded/.vercel -maxdepth 2 -type d -exec du -sh {} \\\\;)",
+      "Bash(du -sh d:/Grounded/public/*)",
+      "Bash(find /d/Grounded -type f \\\\\\( -name \"*.ts\" -o -name \"*.tsx\" -o -name \"*.js\" -o -name \"*.jsx\" \\\\\\) ! -path \"*/node_modules/*\" ! -path \"*/.next/*\" ! -path \"*/.git/*\" ! -path \"*/claude-seo/*\" ! -path \"*/package-lock*\" -exec grep -l \"TODO\\\\|FIXME\\\\|HACK\\\\|XXX\" {} \\\\;)",
+      "Bash(grep -n \"uettnudsxjyhepzlhryd\\\\.supabase\\\\.co\\\\|supabase\\\\.co\" /d/Grounded/next.config.ts /d/Grounded/lib/supabase/*.ts /d/Grounded/components/admin/ImageUpload.tsx)",
+      "Bash(find /d/Grounded/app /d/Grounded/components -type f \\\\\\( -name \"*.ts\" -o -name \"*.tsx\" \\\\\\) -exec grep -l \"console\\\\.log\\\\|console\\\\.debug\\\\|console\\\\.table\" {} \\\\;)",
+      "Bash(ls -la /d/Grounded/tmp*)"
     ]
   }
 }
