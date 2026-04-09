@@ -1,10 +1,41 @@
+'use client'
+
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
+import { Home, Leaf } from 'lucide-react'
 
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
 import { RevealText } from './RevealText'
+import { MenuBar } from '@/components/ui/glow-menu'
+
+const menuItems = [
+  {
+    icon: Home,
+    label: 'Home',
+    href: '/',
+    gradient:
+      'radial-gradient(circle, rgba(154, 204, 98, 0.16) 0%, rgba(141, 163, 90, 0.08) 50%, rgba(74, 85, 30, 0) 100%)',
+    iconColor: 'text-sage',
+  },
+  {
+    icon: Leaf,
+    label: 'Enter the Quiet',
+    href: '/enter-the-quiet',
+    gradient:
+      'radial-gradient(circle, rgba(255, 241, 208, 0.2) 0%, rgba(254, 243, 199, 0.1) 50%, rgba(254, 243, 199, 0) 100%)',
+    iconColor: 'text-cream',
+  },
+]
 
 export default function HeroSection() {
+  const router = useRouter()
+
+  const handleMenuClick = (label: string) => {
+    const item = menuItems.find((menuItem) => menuItem.label === label)
+    if (item) router.push(item.href)
+  }
+
   return (
     <section className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-forest">
       {/* Background */}
@@ -19,6 +50,18 @@ export default function HeroSection() {
 
       {/* Dark overlay for text legibility */}
       <div className="absolute inset-0 bg-forest/60" />
+
+      {/* Navigation */}
+      <div className="absolute inset-x-0 top-8 z-30 pointer-events-none">
+        <div className="mx-auto w-full max-w-md px-4 pointer-events-auto">
+          <MenuBar
+            items={menuItems}
+            activeItem="Home"
+            onItemClick={handleMenuClick}
+            className="mx-auto"
+          />
+        </div>
+      </div>
 
       {/* Content */}
       <div className="relative text-center px-4 sm:px-6 mx-auto w-full max-h-screen flex flex-col items-center justify-center pt-20">

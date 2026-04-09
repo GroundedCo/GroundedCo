@@ -1,4 +1,5 @@
 import { createAnonServerClient } from '@/lib/supabase/server'
+import { cloudinaryFetch } from '@/lib/cloudinary'
 
 // ─── Types (unchanged from original) ─────────────────────────
 export interface CarouselProduct {
@@ -159,9 +160,9 @@ export async function getCarouselProducts(): Promise<CarouselProduct[]> {
     return data.map((row) => ({
       id: row.id,
       name: row.name,
-      carouselImage: row.carousel_image,
-      studioImage: row.studio_image,
-      ugcImage: row.ugc_image,
+      carouselImage: cloudinaryFetch(row.carousel_image),
+      studioImage: cloudinaryFetch(row.studio_image),
+      ugcImage: cloudinaryFetch(row.ugc_image),
       review: {
         author: row.review_author ?? '',
         rating: row.review_rating ?? 5,
@@ -196,8 +197,8 @@ export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
       malayalamName: row.malayalam_name,
       subtitle: row.subtitle ?? '',
       price: row.price,
-      image: row.image,
-      photos: row.photos || [],
+      image: cloudinaryFetch(row.image),
+      photos: (row.photos || []).map((p: string) => cloudinaryFetch(p)),
       badge: row.badge || undefined,
       description: row.description ?? '',
       material: row.material ?? '',
@@ -242,8 +243,8 @@ export async function getFeaturedProductById(productId: string): Promise<Feature
       malayalamName: data.malayalam_name,
       subtitle: data.subtitle ?? '',
       price: data.price,
-      image: data.image,
-      photos: data.photos || [],
+      image: cloudinaryFetch(data.image),
+      photos: (data.photos || []).map((p: string) => cloudinaryFetch(p)),
       badge: data.badge || undefined,
       description: data.description ?? '',
       material: data.material ?? '',
