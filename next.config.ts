@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'uettnudsxjyhepzlhryd.supabase.co',
+        hostname: 'grounded-api.app.vazhemadom.com',
       },
       {
         protocol: 'https',
