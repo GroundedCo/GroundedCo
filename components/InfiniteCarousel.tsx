@@ -78,8 +78,14 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
       if (started) return
       started = true
       mobileX.set(0)
+
+      // Duration scales with product count so scrolling feels consistent
+      // regardless of how many products are in the carousel.
+      // ~3.5s per visible card gives a comfortable browsing speed on mobile.
+      const duration = Math.max(products.length * 3.5, 14)
+
       const controls = animate(mobileX, -half, {
-        duration: 22,
+        duration,
         ease: 'linear',
         repeat: Infinity,
         repeatType: 'loop',
@@ -97,7 +103,7 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
       ro.disconnect()
       animRef.current?.stop()
     }
-  }, [mobileX])
+  }, [mobileX, products.length])
 
   const pauseMobile  = useCallback(() => { animRef.current?.pause() }, [])
   const resumeMobile = useCallback(() => { animRef.current?.play()  }, [])
@@ -144,7 +150,10 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
         <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-cream to-transparent" />
         <div
           className="flex gap-5 carousel-track py-8"
-          style={{ width: 'max-content' }}
+          style={{
+            width: 'max-content',
+            animationDuration: `${Math.max(products.length * 6, 24)}s`,
+          }}
         >
           {doubled.map((product, idx) => (
             <CarouselCard

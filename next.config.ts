@@ -13,10 +13,6 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'grounded-api.app.vazhemadom.com',
       },
-      {
-        protocol: 'https',
-        hostname: 'res.cloudinary.com',
-      },
     ],
   },
 }
