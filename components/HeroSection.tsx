@@ -1,8 +1,9 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Home } from 'lucide-react'
+import { ArrowRight, Home } from 'lucide-react'
 
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
@@ -82,13 +83,20 @@ export default function HeroSection() {
           and rooted in generations of tradition.
         </p>
 
-        <div className="animate-hero-fade-up" style={{ animationDelay: '0.36s' }}>
+        <div className="animate-hero-fade-up flex flex-col items-center gap-3" style={{ animationDelay: '0.36s' }}>
           <a
             href="#collection"
             className="inline-block border border-cream/70 text-cream font-sans font-bold text-sm sm:text-base tracking-[0.2em] uppercase px-10 sm:px-12 py-4 sm:py-5 hover:bg-cream hover:text-forest transition-all duration-300 active:bg-cream active:text-forest"
           >
             Explore the Collection
           </a>
+          <Link
+            href="/consult"
+            className="group inline-flex min-w-56 items-center justify-center gap-3 border border-sage bg-sage px-8 py-3.5 font-sans text-xs font-bold uppercase tracking-[0.28em] text-forest shadow-[0_8px_30px_rgba(204,213,174,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:border-maroon hover:bg-maroon hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream sm:text-sm"
+          >
+            Consult
+            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
+          </Link>
         </div>
       </div>
 

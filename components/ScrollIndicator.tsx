@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 export default function ScrollIndicator() {
   return (
     <motion.div
-      className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+      className="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 1.4, duration: 0.6 }}
