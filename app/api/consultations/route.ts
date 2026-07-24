@@ -1,6 +1,7 @@
 import { createHmac, randomUUID } from 'node:crypto'
 
 import { createServerClient } from '@/lib/supabase/server'
+import { notifyConsultationOnTelegram } from '@/lib/telegram'
 
 export const runtime = 'nodejs'
 
@@ -140,6 +141,23 @@ export async function POST(request: Request) {
       }
       console.error('Consultation insert failed:', insertError)
       return Response.json({ error: 'We could not save your request. Please try again.' }, { status: 500 })
+    }
+
+    try {
+      await notifyConsultationOnTelegram({
+        name,
+        mobileNumber,
+        email: email || null,
+        notes: notes || null,
+        adminUrl: `${new URL(request.url).origin}/admin/consultations`,
+        image: imageUpload ? {
+          bytes: imageUpload.bytes,
+          contentType: imageUpload.contentType,
+          fileName: `consultation.${imageUpload.extension}`,
+        } : undefined,
+      })
+    } catch (notificationError) {
+      console.error('Telegram consultation notification failed:', notificationError)
     }
 
     return Response.json(

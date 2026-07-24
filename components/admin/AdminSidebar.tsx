@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 const navItems = [
   { href: '/admin',          label: 'Dashboard', icon: '◈' },
   { href: '/admin/orders',   label: 'Orders',    icon: '◻' },
+  { href: '/admin/consultations', label: 'Consultations', icon: '◇' },
   { href: '/admin/invoices', label: 'Invoices',  icon: '◫' },
   { href: '/admin/products', label: 'Products',  icon: '▣' },
   { href: '/admin/carousel', label: 'Carousel',  icon: '◎' },
