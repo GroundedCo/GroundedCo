@@ -16,6 +16,8 @@ interface TelegramResponse {
   description?: string
 }
 
+const TELEGRAM_API_TIMEOUT_MS = 10_000
+
 function consultationMessage(notification: ConsultationNotification) {
   const notes = notification.notes
     ? notification.notes.slice(0, 650)
@@ -43,35 +45,41 @@ export async function notifyConsultationOnTelegram(notification: ConsultationNot
   }
 
   const message = consultationMessage(notification)
-  const endpoint = notification.image ? 'sendPhoto' : 'sendMessage'
-  let body: BodyInit
-  let headers: HeadersInit | undefined
+  const messageResponse = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chat_id: chatId, text: message }),
+    signal: AbortSignal.timeout(TELEGRAM_API_TIMEOUT_MS),
+  })
+  const messageResult = (await messageResponse.json()) as TelegramResponse
+
+  if (!messageResponse.ok || !messageResult.ok) {
+    throw new Error(messageResult.description ?? `Telegram API returned ${messageResponse.status}`)
+  }
 
   if (notification.image) {
     const formData = new FormData()
     formData.set('chat_id', chatId)
-    formData.set('caption', message)
+    formData.set('caption', `Reference image from ${notification.name}`)
     formData.set(
       'photo',
       new Blob([Uint8Array.from(notification.image.bytes)], { type: notification.image.contentType }),
       notification.image.fileName,
     )
-    body = formData
-  } else {
-    headers = { 'Content-Type': 'application/json' }
-    body = JSON.stringify({ chat_id: chatId, text: message })
-  }
 
-  const response = await fetch(`https://api.telegram.org/bot${token}/${endpoint}`, {
-    method: 'POST',
-    headers,
-    body,
-    signal: AbortSignal.timeout(10_000),
-  })
-  const result = (await response.json()) as TelegramResponse
+    const photoResponse = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
+      method: 'POST',
+      body: formData,
+      signal: AbortSignal.timeout(TELEGRAM_API_TIMEOUT_MS),
+    })
+    const photoResult = (await photoResponse.json()) as TelegramResponse
 
-  if (!response.ok || !result.ok) {
-    throw new Error(result.description ?? `Telegram API returned ${response.status}`)
+    if (!photoResponse.ok || !photoResult.ok) {
+      console.error(
+        'Telegram consultation image notification failed:',
+        photoResult.description ?? `Telegram API returned ${photoResponse.status}`,
+      )
+    }
   }
 
   return true
