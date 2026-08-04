@@ -5,6 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Home } from 'lucide-react'
 
+import heroBackground from '@/public/images/hero-sheep-wool.jpg'
+
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
 import { RevealText } from './RevealText'
@@ -31,18 +33,23 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-forest">
-      {/* Background */}
+      {/* Background — the source is a 1:2 portrait, so the crop is keyed to
+          viewport aspect ratio rather than width: portrait viewports show the
+          whole composition, landscape ones frame the horizon and the sheep. */}
       <Image
-        src="https://images.unsplash.com/photo-1600166898405-da9535204843?w=2000&q=90&fm=webp"
-        alt="Handcrafted rug with natural wool texture in a curated living space"
+        src={heroBackground}
+        alt="A sheep grazing on open pasture behind a freshly shorn fleece of natural wool"
         fill
-        priority
+        preload
+        placeholder="blur"
+        quality={90}
         sizes="100vw"
-        className="object-cover object-center mix-blend-overlay opacity-60"
+        className="object-cover [object-position:50%_50%] [@media(min-aspect-ratio:1/1)]:[object-position:50%_38%]"
       />
 
-      {/* Dark overlay for text legibility */}
-      <div className="absolute inset-0 bg-forest/60" />
+      {/* Brand tint, then a top/bottom scrim so the nav, headline and CTAs stay legible */}
+      <div className="absolute inset-0 bg-forest/45" />
+      <div className="absolute inset-0 bg-gradient-to-b from-forest/55 via-forest/0 to-forest/65" />
 
       {/* Navigation */}
       <div className="absolute inset-x-0 top-8 z-30 pointer-events-none">
