@@ -1,11 +1,12 @@
 'use client'
 
-import Image from 'next/image'
+import { getImageProps } from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Home } from 'lucide-react'
 
-import heroBackground from '@/public/images/hero-sheep-wool.jpg'
+import heroPortrait from '@/public/images/hero-pasture-lounge.jpg'
+import heroWide from '@/public/images/hero-pasture-lounge-wide.jpg'
 
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
@@ -23,6 +24,9 @@ const menuItems = [
   },
 ]
 
+const heroAlt =
+  'Aerial view of a green sectional sofa and a handwoven wool rug arranged on open pasture at sunset, with sheep grazing beyond'
+
 export default function HeroSection() {
   const router = useRouter()
 
@@ -31,25 +35,41 @@ export default function HeroSection() {
     if (item) router.push(item.href)
   }
 
-  return (
-    <section className="relative w-full h-screen min-h-[600px] flex items-center justify-center overflow-hidden bg-forest">
-      {/* Background — the source is a 1:2 portrait, so the crop is keyed to
-          viewport aspect ratio rather than width: portrait viewports show the
-          whole composition, landscape ones frame the horizon and the sheep. */}
-      <Image
-        src={heroBackground}
-        alt="A sheep grazing on open pasture behind a freshly shorn fleece of natural wool"
-        fill
-        preload
-        placeholder="blur"
-        quality={90}
-        sizes="100vw"
-        className="object-cover [object-position:50%_50%] [@media(min-aspect-ratio:1/1)]:[object-position:50%_38%]"
-      />
+  // Two masters of the same photograph, picked on viewport *shape* rather than
+  // width — the hero is full-bleed and full-height, so a 1024x768 tablet needs
+  // the same framing as a desktop, not the phone's. The portrait master is the
+  // whole composition (mountains, flock, lounge, cracked earth); the wide one
+  // is a 3:2 band around the sofa and rug, so landscape viewports get real
+  // pixels instead of a 2.6x upscale of the portrait. `<picture>` means each
+  // viewport downloads exactly one of them.
+  const common = { alt: heroAlt, sizes: '100vw', quality: 90 }
+  const {
+    props: { srcSet: wideSrcSet },
+  } = getImageProps({ ...common, src: heroWide })
+  const {
+    props: { srcSet: portraitSrcSet, ...portraitRest },
+  } = getImageProps({ ...common, src: heroPortrait })
 
-      {/* Brand tint, then a top/bottom scrim so the nav, headline and CTAs stay legible */}
-      <div className="absolute inset-0 bg-forest/45" />
-      <div className="absolute inset-0 bg-gradient-to-b from-forest/55 via-forest/0 to-forest/65" />
+  return (
+    <section className="relative w-full h-[100svh] min-h-[600px] flex items-center justify-center overflow-hidden bg-forest">
+      {/* Background */}
+      <picture>
+        <source media="(min-aspect-ratio: 1/1)" srcSet={wideSrcSet} sizes="100vw" />
+        <source srcSet={portraitSrcSet} sizes="100vw" />
+        <img
+          {...portraitRest}
+          loading="eager"
+          fetchPriority="high"
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+      </picture>
+
+      {/* Brand tint, then a top/bottom scrim so the nav, headline and CTAs stay
+          legible. Lighter than the old fleece photo needed, and the scrim is
+          warm obsidian rather than more forest — this frame carries the sunset,
+          and a heavy green flood drains it to a flat murky wash. */}
+      <div className="absolute inset-0 bg-forest/25" />
+      <div className="absolute inset-0 bg-gradient-to-b from-deep-obsidian/50 via-deep-obsidian/10 to-deep-obsidian/60" />
 
       {/* Navigation */}
       <div className="absolute inset-x-0 top-8 z-30 pointer-events-none">
