@@ -98,7 +98,7 @@
   }
 
   body {
-    @apply font-sans relative transition-colors duration-500 ease-in-out bg-background text-foreground;
+    @apply font-sans relative transition-colors duration-500 ease-in-out bg-cream text-foreground;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: none;
   }

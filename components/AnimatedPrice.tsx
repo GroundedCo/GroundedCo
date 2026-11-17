@@ -47,29 +47,29 @@ export default function AnimatedPrice({ price, discount = 1.3 }: AnimatedPricePr
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       viewport={{ once: true }}
-      className="mb-6 pb-6 border-b border-deep-obsidian/10"
+      className="mb-6 pb-6 border-b border-forest/15"
     >
       {/* Label */}
       <p className="font-sans font-bold text-forest text-[10px] tracking-[0.25em] uppercase mb-4">
-        Founding Rate · Limited to 5 Homes
+        Founding Rate · Limited Edition
       </p>
 
       {/* Original (struck-through) price */}
       <div className="flex items-baseline gap-4 mb-1">
         <span
-          className="price-strike font-sans text-deep-obsidian/35 text-lg font-medium"
+          className="price-strike font-sans text-forest/35 text-lg font-medium"
           data-testid="original-price"
         >
           {formatINR(originalPrice)}
         </span>
-        <span className="font-sans text-xs tracking-wider uppercase bg-forest/10 text-forest px-2 py-0.5 font-bold">
+        <span className="font-sans text-xs tracking-wider uppercase bg-forest/10 text-forest px-2.5 py-0.5 font-bold rounded-full">
           {discountPct}% Off
         </span>
       </div>
 
       {/* Animated sale price */}
       <div className="flex items-baseline gap-2 mt-2">
-        <span className="font-sans text-deep-obsidian/50 text-sm font-medium">Now</span>
+        <span className="font-sans text-forest/60 text-sm font-medium">Now</span>
         <motion.span
           className="font-display leading-none tracking-tighter transition-colors duration-500"
           style={{ fontSize: 'clamp(2rem, 6vw, 3.75rem)', color: '#01472e' }}
@@ -80,7 +80,7 @@ export default function AnimatedPrice({ price, discount = 1.3 }: AnimatedPricePr
       </div>
 
       {/* Subtext */}
-      <p className="font-sans text-deep-obsidian/40 text-xs leading-relaxed mt-3">
+      <p className="font-sans text-forest/50 text-xs leading-relaxed mt-3">
         Free shipping · All taxes included · EMI available on qualifying orders
       </p>
     </motion.div>

@@ -50,10 +50,11 @@ function CarouselCard({
 }
 
 interface InfiniteCarouselProps {
-  products: CarouselProduct[]
+  products?: CarouselProduct[]
 }
 
-export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
+export default function InfiniteCarousel({ products = [] }: InfiniteCarouselProps) {
+  const safeProducts = Array.isArray(products) && products.length > 0 ? products : []
   const [selected, setSelected] = useState<CarouselProduct | null>(null)
 
   const handleSelect = useCallback((product: CarouselProduct) => {
@@ -66,7 +67,7 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
 
   useEffect(() => {
     const track = trackRef.current
-    if (!track) return
+    if (!track || safeProducts.length === 0) return
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (prefersReduced) return
 
@@ -82,7 +83,7 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
       // Duration scales with product count so scrolling feels consistent
       // regardless of how many products are in the carousel.
       // ~3.5s per visible card gives a comfortable browsing speed on mobile.
-      const duration = Math.max(products.length * 3.5, 14)
+      const duration = Math.max(safeProducts.length * 3.5, 14)
 
       const controls = animate(mobileX, -half, {
         duration,
@@ -103,13 +104,17 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
       ro.disconnect()
       animRef.current?.stop()
     }
-  }, [mobileX, products.length])
+  }, [mobileX, safeProducts.length])
 
   const pauseMobile  = useCallback(() => { animRef.current?.pause() }, [])
   const resumeMobile = useCallback(() => { animRef.current?.play()  }, [])
 
+  if (safeProducts.length === 0) {
+    return null
+  }
+
   // Duplicate for seamless infinite loop
-  const doubled = [...products, ...products]
+  const doubled = [...safeProducts, ...safeProducts]
 
   return (
     <section id="collection" data-nav-theme="light" className="py-16 sm:py-24 bg-cream overflow-hidden">
@@ -152,7 +157,7 @@ export default function InfiniteCarousel({ products }: InfiniteCarouselProps) {
           className="flex gap-5 carousel-track py-8"
           style={{
             width: 'max-content',
-            animationDuration: `${Math.max(products.length * 6, 24)}s`,
+            animationDuration: `${Math.max(safeProducts.length * 6, 24)}s`,
           }}
         >
           {doubled.map((product, idx) => (

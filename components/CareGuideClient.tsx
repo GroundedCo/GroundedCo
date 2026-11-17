@@ -26,17 +26,17 @@ export default function CareGuideClient({ product }: CareGuideClientProps) {
   ]
 
   return (
-    <div className="border border-deep-obsidian/10">
+    <div className="border border-forest/15 rounded-2xl overflow-hidden bg-cream/40">
       {/* Tab headers */}
-      <div className="flex border-b border-deep-obsidian/10">
+      <div className="flex border-b border-forest/10 bg-forest/5">
         {tabs.map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`font-sans text-xs tracking-[0.15em] uppercase py-3 px-6 transition-colors duration-200 border-b-2 -mb-px ${
+            className={`font-sans text-xs tracking-[0.15em] uppercase py-3 px-6 transition-colors duration-200 border-b-2 -mb-px font-bold ${
               activeTab === tab.key
-                ? 'border-deep-obsidian text-deep-obsidian'
-                : 'border-transparent text-deep-obsidian/40 hover:text-deep-obsidian/60'
+                ? 'border-forest text-forest bg-cream/60'
+                : 'border-transparent text-forest/40 hover:text-forest/70'
             }`}
           >
             {tab.label}
@@ -45,27 +45,27 @@ export default function CareGuideClient({ product }: CareGuideClientProps) {
       </div>
 
       {/* Tab content */}
-      <div className="py-3 px-6">
+      <div className="py-4 px-6">
         {activeTab === 'care' && (
           <div>
-            <p className="font-sans text-deep-obsidian/50 text-xs leading-relaxed italic py-3 border-b border-deep-obsidian/10">
+            <p className="font-sans text-forest/60 text-xs leading-relaxed italic py-2 border-b border-forest/10 mb-2">
               To preserve the life and soul of your handcrafted piece, we recommend the following rituals:
             </p>
             {CARE_ITEMS.map(({ title, body }, i) => (
-              <div key={title} className="border-b border-deep-obsidian/10 last:border-0">
+              <div key={title} className="border-b border-forest/10 last:border-0">
                 <button
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
                   className="w-full flex items-center justify-between py-3 text-left gap-4"
                 >
-                  <span className="font-sans text-xs font-semibold tracking-[0.1em] uppercase text-deep-obsidian">
+                  <span className="font-sans text-xs font-bold tracking-[0.1em] uppercase text-forest">
                     {title}
                   </span>
-                  <span className={`text-deep-obsidian/40 text-xs shrink-0 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}>
+                  <span className={`text-forest/40 text-xs shrink-0 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}>
                     ▾
                   </span>
                 </button>
                 {openIndex === i && (
-                  <p className="font-sans text-deep-obsidian/60 text-xs leading-relaxed pb-3 -mt-1">
+                  <p className="font-sans text-forest/70 text-xs leading-relaxed pb-3 -mt-1">
                     {body}
                   </p>
                 )}
@@ -75,18 +75,18 @@ export default function CareGuideClient({ product }: CareGuideClientProps) {
         )}
 
         {activeTab === 'delivery' && (
-          <div className="space-y-5">
+          <div className="space-y-4 py-2">
             <div>
-              <p className="font-sans text-deep-obsidian/40 text-xs tracking-wider uppercase mb-1.5">
+              <p className="font-sans text-forest/50 text-xs tracking-wider uppercase mb-1 font-bold">
                 Estimated Delivery
               </p>
-              <p className="font-sans text-deep-obsidian text-sm">{product.delivery.estimate}</p>
+              <p className="font-sans text-forest text-sm font-semibold">{product.delivery.estimate}</p>
             </div>
             <div>
-              <p className="font-sans text-deep-obsidian/40 text-xs tracking-wider uppercase mb-1.5">
+              <p className="font-sans text-forest/50 text-xs tracking-wider uppercase mb-1 font-bold">
                 Shipping
               </p>
-              <p className="font-sans text-deep-obsidian text-sm">{product.delivery.shippingCost}</p>
+              <p className="font-sans text-forest text-sm font-semibold">{product.delivery.shippingCost}</p>
             </div>
           </div>
         )}

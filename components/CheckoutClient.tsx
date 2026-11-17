@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { createPortal } from 'react-dom'
 import Script from 'next/script'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { FeaturedProduct } from '@/data/products'
 
@@ -48,18 +49,18 @@ function StepIndicator({ step }: { step: 1 | 2 }) {
       {[1, 2].map((s) => (
         <div key={s} className="flex items-center gap-2">
           <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold transition-colors duration-300 ${
-            step === s ? 'bg-deep-obsidian text-wool-white' :
-            step > s  ? 'bg-forest text-wool-white' :
-                        'bg-deep-obsidian/10 text-deep-obsidian/40'
+            step === s ? 'bg-forest text-cream' :
+            step > s  ? 'bg-sage text-forest' :
+                        'bg-forest/10 text-forest/40'
           }`}>
             {step > s ? '✓' : s}
           </div>
           <span className={`text-xs font-sans font-bold tracking-wider uppercase ${
-            step === s ? 'text-deep-obsidian' : 'text-deep-obsidian/30'
+            step === s ? 'text-forest' : 'text-forest/30'
           }`}>
             {s === 1 ? 'Address' : 'Review & Pay'}
           </span>
-          {s < 2 && <div className="w-8 h-px bg-deep-obsidian/15 mx-1" />}
+          {s < 2 && <div className="w-8 h-px bg-forest/15 mx-1" />}
         </div>
       ))}
     </div>
@@ -72,16 +73,16 @@ function Field({
 }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <label className="font-sans text-xs font-bold tracking-[0.15em] uppercase text-deep-obsidian/50">
-        {label}{required && <span className="text-muted-earth ml-0.5">*</span>}
+      <label className="font-sans text-xs font-bold tracking-[0.15em] uppercase text-forest/60">
+        {label}{required && <span className="text-forest ml-0.5">*</span>}
       </label>
       {children}
     </div>
   )
 }
 
-const inputCls = `w-full font-sans text-sm text-deep-obsidian bg-transparent border border-deep-obsidian/20
-  px-4 py-3 focus:outline-none focus:border-forest transition-colors duration-200 placeholder:text-deep-obsidian/25`
+const inputCls = `w-full font-sans text-sm text-forest bg-cream/60 border border-forest/20
+  px-4 py-3 rounded-xl focus:outline-none focus:border-forest transition-colors duration-200 placeholder:text-forest/30`
 
 // ─── Step 1: Address Form ──────────────────────────────────────
 function AddressStep({
@@ -150,38 +151,38 @@ function AddressStep({
       <StepIndicator step={1} />
 
       {/* Quantity */}
-      <div className="flex items-center justify-between py-3 border-y border-deep-obsidian/10">
-        <span className="font-sans text-xs font-bold tracking-[0.15em] uppercase text-deep-obsidian/50">Quantity</span>
+      <div className="flex items-center justify-between py-3 border-y border-forest/15">
+        <span className="font-sans text-xs font-bold tracking-[0.15em] uppercase text-forest/60">Quantity</span>
         <div className="flex items-center gap-3">
           <button
             type="button"
             onClick={() => onQtyChange(Math.max(1, quantity - 1))}
-            className="w-8 h-8 flex items-center justify-center border border-deep-obsidian/20 text-deep-obsidian hover:border-forest transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center border border-forest/20 text-forest hover:bg-forest/5 transition-colors font-bold"
           >−</button>
-          <span className="font-sans font-bold text-sm w-6 text-center">{quantity}</span>
+          <span className="font-sans font-bold text-sm w-6 text-center text-forest">{quantity}</span>
           <button
             type="button"
             onClick={() => onQtyChange(Math.min(maxQty, quantity + 1))}
-            className="w-8 h-8 flex items-center justify-center border border-deep-obsidian/20 text-deep-obsidian hover:border-forest transition-colors"
+            className="w-8 h-8 rounded-lg flex items-center justify-center border border-forest/20 text-forest hover:bg-forest/5 transition-colors font-bold"
           >+</button>
         </div>
       </div>
 
-      <p className="font-sans text-xs font-bold text-deep-obsidian/40 tracking-wider uppercase -mt-3">
-        Total: <span className="text-deep-obsidian">{formatINR(price * quantity)}</span>
+      <p className="font-sans text-xs font-bold text-forest/50 tracking-wider uppercase -mt-3">
+        Total: <span className="text-forest font-bold">{formatINR(price * quantity)}</span>
       </p>
 
       <button
         type="button"
         onClick={() => setShowDetails(true)}
-        className="w-full font-sans text-xs tracking-[0.2em] uppercase bg-deep-obsidian text-wool-white py-4 hover:bg-forest transition-colors duration-300"
+        className="w-full font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest text-cream py-4 rounded-[2.5rem] hover:bg-sage hover:text-forest transition-colors duration-300 shadow-md"
       >
         Buy Now →
       </button>
 
       {showDetails && mounted && createPortal(
       <div
-        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+        className="fixed inset-0 z-[60] flex items-center justify-center bg-forest/40 backdrop-blur-sm p-4"
         onPointerDown={(e) => { backdropDownTarget.current = e.target }}
         onPointerUp={(e) => {
           if (backdropDownTarget.current === e.currentTarget && e.target === e.currentTarget) {
@@ -191,13 +192,13 @@ function AddressStep({
         }}
       >
       <div
-        className="bg-wool-white max-w-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain p-6 sm:p-8 space-y-6 relative"
+        className="bg-cream border border-forest/20 rounded-[2rem] max-w-2xl w-full max-h-[90vh] overflow-y-auto overscroll-contain p-6 sm:p-8 space-y-6 relative shadow-2xl"
         onPointerDown={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={() => setShowDetails(false)}
-          className="absolute top-3 right-4 text-deep-obsidian/50 hover:text-deep-obsidian text-2xl leading-none"
+          className="absolute top-4 right-5 text-forest/50 hover:text-forest text-2xl leading-none font-bold"
           aria-label="Close"
         >×</button>
 
@@ -452,12 +453,12 @@ export default function CheckoutClient({ product }: { product: FeaturedProduct }
 
   if (maxQty === 0) {
     return (
-      <div className="space-y-4">
-        <div className="w-full text-center font-sans text-xs tracking-[0.2em] uppercase bg-deep-obsidian/20 text-deep-obsidian/40 py-4 cursor-not-allowed">
-          Out of Stock
+      <div className="space-y-4 pt-2">
+        <div className="w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-deep-obsidian/10 text-deep-obsidian/40 py-4 rounded-full cursor-not-allowed select-none">
+          Sold Out
         </div>
-        <p className="font-sans text-deep-obsidian/30 text-xs text-center tracking-wider">
-          Join our waitlist — contact us to be notified
+        <p className="font-sans text-deep-obsidian/50 text-xs text-center tracking-wide">
+          Claimed · Once placed, never woven again.
         </p>
       </div>
     )
@@ -465,9 +466,8 @@ export default function CheckoutClient({ product }: { product: FeaturedProduct }
 
   return (
     <div>
-      <p className="font-sans text-xs tracking-wider mb-4">
-        <span className="text-amber-600 font-bold">Only {maxQty} left</span>
-        <span className="text-deep-obsidian/40"> — Secure yours!</span>
+      <p className="font-sans text-xs tracking-wider mb-4 text-deep-obsidian/60">
+        <span className="font-bold text-deep-obsidian">{maxQty === 1 ? 'Only 1 left' : `${maxQty} available`}</span>
       </p>
 
       {step === 1 ? (

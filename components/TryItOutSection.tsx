@@ -15,14 +15,27 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
     setPhotoIndex((prev) => (prev + 1) % allPhotos.length)
   }
 
+  const stockCount = typeof product.stockCount === 'number' ? product.stockCount : 0
+  const isOutOfStock = stockCount === 0
+
   return (
     <div className="group relative bg-cream flex flex-col rounded-[2.5rem] overflow-hidden border border-forest/10 hover:border-sage transition-colors duration-300 shadow-2xl relative z-20">
-      {/* Badge */}
-      {product.badge && (
-        <span className="absolute top-6 left-6 z-10 font-sans font-bold text-xs tracking-[0.2em] uppercase bg-sage text-forest px-4 py-2 rounded-full">
-          {product.badge}
-        </span>
-      )}
+      {/* Top badges */}
+      <div className="absolute top-6 left-6 right-6 z-10 flex items-center justify-between pointer-events-none">
+        {product.badge ? (
+          <span className="font-sans font-bold text-xs tracking-[0.2em] uppercase bg-sage text-forest px-4 py-2 rounded-full">
+            {product.badge}
+          </span>
+        ) : (
+          <div />
+        )}
+
+        {isOutOfStock && (
+          <span className="font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest/80 text-cream px-4 py-2 rounded-full">
+            Sold Out
+          </span>
+        )}
+      </div>
 
       {/* Product image */}
       <div className="p-4 pt-12 pb-0">
@@ -32,18 +45,22 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
           title={allPhotos.length > 1 ? 'Click to see more photos' : undefined}
         >
           <Image
-            src={allPhotos[photoIndex]}
+            src={allPhotos[photoIndex] || '/placeholder.png'}
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-105"
+            className={`object-cover transition-transform duration-700 group-hover:scale-105 ${
+              isOutOfStock ? 'opacity-70' : ''
+            }`}
           />
           {allPhotos.length > 1 && (
             <div className="absolute bottom-3 right-3 flex gap-1.5">
               {allPhotos.map((_, i) => (
                 <span
                   key={i}
-                  className={`block w-1.5 h-1.5 rounded-full transition-colors duration-300 ${i === photoIndex ? 'bg-cream' : 'bg-cream/40'}`}
+                  className={`block w-1.5 h-1.5 rounded-full transition-colors duration-300 ${
+                    i === photoIndex ? 'bg-cream' : 'bg-cream/40'
+                  }`}
                 />
               ))}
             </div>
@@ -54,17 +71,51 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
       {/* Details */}
       <div className="p-8 flex flex-col gap-4 flex-1">
         <div>
-          <h3 itemProp="name" className="font-display text-forest text-4xl uppercase tracking-tighter mb-2">{product.malayalamName || product.name}</h3>
-          <p className="font-sans font-bold text-forest/50 text-sm tracking-wide">{product.subtitle}</p>
+          <div className="flex items-baseline justify-between gap-4 mb-2">
+            <h3
+              itemProp="name"
+              className="font-display text-forest text-4xl uppercase tracking-tighter"
+            >
+              {product.malayalamName || product.name}
+            </h3>
+            {product.price && (
+              <span className="font-sans font-bold text-forest text-lg">
+                ₹{product.price.toLocaleString('en-IN')}
+              </span>
+            )}
+          </div>
+          <p className="font-sans font-bold text-forest/50 text-sm tracking-wide mb-2">
+            {product.subtitle}
+          </p>
+
+          {/* Stock info */}
+          {isOutOfStock ? (
+            <p className="font-sans text-xs text-forest/40 tracking-wide">
+              Claimed · Once placed, never woven again.
+            </p>
+          ) : (
+            <p className="font-sans text-xs text-forest/60 tracking-wide font-medium">
+              {stockCount === 1 ? 'Only 1 available' : `${stockCount} available`}
+            </p>
+          )}
         </div>
 
         <div className="mt-auto pt-6 border-t border-forest/10">
-          <Link
-            href={`/checkout/${product.id}`}
-            className="block w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest text-cream px-8 py-4 rounded-[2.5rem] hover:bg-sage hover:text-forest transition-colors duration-300 relative z-30"
-          >
-            Bring It Home
-          </Link>
+          {isOutOfStock ? (
+            <button
+              disabled
+              className="block w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest/10 text-forest/30 px-8 py-4 rounded-[2.5rem] cursor-not-allowed"
+            >
+              Sold Out
+            </button>
+          ) : (
+            <Link
+              href={`/checkout/${product.id}`}
+              className="block w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest text-cream px-8 py-4 rounded-[2.5rem] hover:bg-sage hover:text-forest transition-colors duration-300 relative z-30"
+            >
+              Bring It Home
+            </Link>
+          )}
         </div>
       </div>
     </div>
@@ -72,12 +123,21 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
 }
 
 interface TryItOutSectionProps {
-  products: FeaturedProduct[]
+  products?: FeaturedProduct[]
 }
 
-export default function TryItOutSection({ products }: TryItOutSectionProps) {
+export default function TryItOutSection({ products = [] }: TryItOutSectionProps) {
   const pillRef = useRef<HTMLDivElement>(null)
   const [fillActive, setFillActive] = useState(false)
+
+  const safeProducts = Array.isArray(products) ? products : []
+
+  // Always keep in-stock variants on top
+  const sortedProducts = [...safeProducts].sort((a, b) => {
+    const aInStock = (a.stockCount ?? 0) > 0 ? 1 : 0
+    const bInStock = (b.stockCount ?? 0) > 0 ? 1 : 0
+    return bInStock - aInStock
+  })
 
   useEffect(() => {
     const el = pillRef.current
@@ -91,8 +151,9 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
   }, [])
 
   return (
-    <section data-nav-theme="dark" className="py-24 bg-forest rounded-[5rem] mx-4 mb-24 shadow-2xl" id="try-it-out">
-      <div className="max-w-6xl mx-auto px-6 md:px-12">
+    <div className="bg-cream pb-12 sm:pb-24">
+      <section data-nav-theme="dark" className="py-24 bg-forest rounded-[5rem] mx-4 shadow-2xl" id="try-it-out">
+        <div className="max-w-6xl mx-auto px-6 md:px-12">
 
         {/* Heading */}
         <div className="mb-16 text-center">
@@ -107,28 +168,28 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 text-center md:text-left mb-16">
             <div className="flex flex-col gap-4">
               <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
-                By Selection Only
+                A Singular Commission
               </h4>
               <p className="font-sans text-cream/70 text-sm leading-relaxed">
-                To complete our first 100 bespoke orders, we are releasing ten singular masterpieces: five of മായ and five of നില.
+                An ongoing exploration of texture, form, and earth. We release our masterworks as completely unique, one-of-one studies in spatial design. Each piece is an absolute original—once placed, it is never woven again.
               </p>
             </div>
 
             <div className="flex flex-col gap-4">
               <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
-                The Gravity of Five
+                The Weight of One
               </h4>
               <p className="font-sans text-cream/70 text-sm leading-relaxed">
-                Our looms move at the pace of heritage. With a hand-tufted density rarely seen in modern interiors, we restrict this release to just five homes per design.
+                Our looms move at the pace of heritage. Because of the profound hand-tufted density and the intensive, unhurried months required to craft every square foot, our designs are realized strictly as singular editions, reserved for one home only.
               </p>
             </div>
 
             <div className="flex flex-col gap-4">
               <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
-                A Founding Gesture
+                The Sanctuary Preview
               </h4>
               <p className="font-sans text-cream/70 text-sm leading-relaxed">
-                Experience the Grounded Try-Out in your sanctuary. We have set a founding rate for these pieces, a quiet gift to the first floors that carry our name.
+                The true measure of a masterpiece is how it holds a room. Experience the Grounded Try-Out within your own architecture. We invite you to live with a singular work, allowing its weight to anchor your space before claiming its legacy.
               </p>
             </div>
           </div>
@@ -146,7 +207,7 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
 
         {/* Product cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-20">
-          {products.map((product) => (
+          {sortedProducts.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
@@ -162,5 +223,6 @@ export default function TryItOutSection({ products }: TryItOutSectionProps) {
         </div>
       </div>
     </section>
+  </div>
   )
 }

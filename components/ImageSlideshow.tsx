@@ -52,12 +52,12 @@ export default function ImageSlideshow({ images, alt, badge }: ImageSlideshowPro
     <div className="space-y-3">
       {/* Main image */}
       <div
-        className="relative aspect-square w-full overflow-hidden bg-deep-obsidian/5 select-none"
+        className="relative aspect-square w-full overflow-hidden rounded-2xl bg-forest/5 select-none"
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
         {badge && (
-          <span className="absolute top-5 left-5 z-10 font-sans text-xs tracking-widest uppercase bg-muted-earth text-wool-white px-4 py-1.5">
+          <span className="absolute top-5 left-5 z-10 font-sans font-bold text-xs tracking-[0.2em] uppercase bg-sage text-forest px-4 py-1.5 rounded-full shadow-sm">
             {badge}
           </span>
         )}
@@ -87,9 +87,9 @@ export default function ImageSlideshow({ images, alt, badge }: ImageSlideshowPro
               id="slideshow-prev"
               onClick={prev}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-wool-white/80 backdrop-blur-sm hover:bg-wool-white transition-colors duration-200 shadow-md"
+              className="absolute left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-cream/90 backdrop-blur-sm hover:bg-cream transition-colors duration-200 shadow-md rounded-full text-forest"
             >
-              <svg className="w-4 h-4 text-deep-obsidian" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
               </svg>
             </button>
@@ -97,9 +97,9 @@ export default function ImageSlideshow({ images, alt, badge }: ImageSlideshowPro
               id="slideshow-next"
               onClick={next}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-wool-white/80 backdrop-blur-sm hover:bg-wool-white transition-colors duration-200 shadow-md"
+              className="absolute right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 flex items-center justify-center bg-cream/90 backdrop-blur-sm hover:bg-cream transition-colors duration-200 shadow-md rounded-full text-forest"
             >
-              <svg className="w-4 h-4 text-deep-obsidian" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
               </svg>
             </button>
@@ -113,8 +113,8 @@ export default function ImageSlideshow({ images, alt, badge }: ImageSlideshowPro
                   aria-label={`Go to image ${i + 1}`}
                   className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${
                     i === current
-                      ? 'bg-wool-white w-4'
-                      : 'bg-wool-white/50 hover:bg-wool-white/80'
+                      ? 'bg-cream w-4'
+                      : 'bg-cream/50 hover:bg-cream/80'
                   }`}
                 />
               ))}
@@ -132,9 +132,9 @@ export default function ImageSlideshow({ images, alt, badge }: ImageSlideshowPro
               id={`slideshow-thumb-${i}`}
               onClick={() => setCurrent(i)}
               aria-label={`View image ${i + 1}`}
-              className={`relative flex-none w-16 h-16 overflow-hidden transition-all duration-200 ${
+              className={`relative flex-none w-16 h-16 overflow-hidden rounded-xl transition-all duration-200 ${
                 i === current
-                  ? 'ring-2 ring-deep-obsidian ring-offset-1'
+                  ? 'ring-2 ring-forest ring-offset-2 ring-offset-cream'
                   : 'opacity-50 hover:opacity-80'
               }`}
             >

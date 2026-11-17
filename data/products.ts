@@ -44,7 +44,7 @@ export interface FeaturedProduct {
 
 // ─── Hardcoded Fallbacks (original data) ─────────────────────
 
-const FALLBACK_CAROUSEL: CarouselProduct[] = [
+export const FALLBACK_CAROUSEL: CarouselProduct[] = [
   {
     id: 'cp-01',
     name: 'Sahara Wool Blend',
@@ -116,6 +116,7 @@ export const FALLBACK_FEATURED: FeaturedProduct[] = [
     careInstructions: ['Professional dry cleaning recommended', 'Vacuum regularly without beater bar', 'Blot spills immediately with a dry cloth', 'Rotate every 6 months for even wear', 'Avoid direct sunlight to preserve colour'],
     features: ['GoodWeave® certified — no child labour', 'Natural, undyed wool with vegetable-dyed accents', 'Anti-slip backing included', 'Moth and stain resistant treatment', 'Comes with complimentary rug pad'],
     delivery: { estimate: '5–7 business days (Metro cities) · 8–12 business days (Rest of India)', shippingCost: 'Free shipping across India', returnPolicy: '30-day no-questions-asked return policy. Free reverse pickup.' },
+    stockCount: 0,
   },
   {
     id: 'fp-ember',
@@ -136,6 +137,7 @@ export const FALLBACK_FEATURED: FeaturedProduct[] = [
     careInstructions: ['Machine washable on gentle cycle (cold water)', 'Air dry flat — do not tumble dry', 'Vacuum both sides regularly', 'Spot clean with mild detergent', 'Can be dry cleaned if preferred'],
     features: ['Reversible design — two looks in one', 'Eco-friendly natural fibres', 'Hypoallergenic and pet friendly', 'Lightweight and easy to move', 'Non-toxic AZO-free dyes'],
     delivery: { estimate: '3–5 business days (Metro cities) · 6–10 business days (Rest of India)', shippingCost: 'Free shipping across India', returnPolicy: '30-day no-questions-asked return policy. Free reverse pickup.' },
+    stockCount: 0,
   },
 ]
 
@@ -156,7 +158,7 @@ export async function getCarouselProducts(): Promise<CarouselProduct[]> {
       return FALLBACK_CAROUSEL
     }
 
-    return data.map((row) => ({
+    const result: CarouselProduct[] = data.map((row) => ({
       id: row.id,
       name: row.name,
       carouselImage: row.carousel_image,
@@ -169,6 +171,7 @@ export async function getCarouselProducts(): Promise<CarouselProduct[]> {
         date: row.review_date ?? '',
       },
     }))
+    return result.length > 0 ? result : FALLBACK_CAROUSEL
   } catch {
     console.warn('Supabase not available, using fallback carousel data')
     return FALLBACK_CAROUSEL
@@ -190,7 +193,7 @@ export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
       return FALLBACK_FEATURED
     }
 
-    return data.map((row) => ({
+    const mapped: FeaturedProduct[] = data.map((row) => ({
       id: row.id,
       name: row.name,
       malayalamName: row.malayalam_name,
@@ -215,6 +218,14 @@ export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
       },
       stockCount: row.stock_count ?? 0,
     }))
+
+    // In-stock products always on top
+    const sorted = mapped.sort((a, b) => {
+      const aInStock = (a.stockCount ?? 0) > 0 ? 1 : 0
+      const bInStock = (b.stockCount ?? 0) > 0 ? 1 : 0
+      return bInStock - aInStock
+    })
+    return sorted.length > 0 ? sorted : FALLBACK_FEATURED
   } catch {
     console.warn('Supabase not available, using fallback featured data')
     return FALLBACK_FEATURED
