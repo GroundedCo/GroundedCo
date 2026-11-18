@@ -2,8 +2,7 @@
 
 import { getImageProps } from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { ArrowRight, Home } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 import heroPortrait from '@/public/images/hero-pasture-lounge.jpg'
 import heroWide from '@/public/images/hero-pasture-lounge-wide.jpg'
@@ -11,29 +10,11 @@ import heroWide from '@/public/images/hero-pasture-lounge-wide.jpg'
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
 import { RevealText } from './RevealText'
-import { MenuBar } from '@/components/ui/glow-menu'
-
-const menuItems = [
-  {
-    icon: Home,
-    label: 'Home',
-    href: '/',
-    gradient:
-      'radial-gradient(circle, rgba(154, 204, 98, 0.16) 0%, rgba(141, 163, 90, 0.08) 50%, rgba(74, 85, 30, 0) 100%)',
-    iconColor: 'text-sage',
-  },
-]
 
 const heroAlt =
   'Aerial view of a green sectional sofa and a handwoven wool rug arranged on open pasture at sunset, with sheep grazing beyond'
 
 export default function HeroSection() {
-  const router = useRouter()
-
-  const handleMenuClick = (label: string) => {
-    const item = menuItems.find((menuItem) => menuItem.label === label)
-    if (item) router.push(item.href)
-  }
 
   // Two masters of the same photograph, picked on viewport *shape* rather than
   // width — the hero is full-bleed and full-height, so a 1024x768 tablet needs
@@ -70,18 +51,6 @@ export default function HeroSection() {
           and a heavy green flood drains it to a flat murky wash. */}
       <div className="absolute inset-0 bg-forest/25" />
       <div className="absolute inset-0 bg-gradient-to-b from-deep-obsidian/50 via-deep-obsidian/10 to-deep-obsidian/60" />
-
-      {/* Navigation */}
-      <div className="absolute inset-x-0 top-8 z-30 pointer-events-none">
-        <div className="mx-auto w-full max-w-md px-4 pointer-events-auto">
-          <MenuBar
-            items={menuItems}
-            activeItem="Home"
-            onItemClick={handleMenuClick}
-            className="mx-auto"
-          />
-        </div>
-      </div>
 
       {/* Content */}
       <div className="relative text-center px-4 sm:px-6 mx-auto w-full max-h-screen flex flex-col items-center justify-center pt-20">

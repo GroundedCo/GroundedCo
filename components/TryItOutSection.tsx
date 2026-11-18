@@ -168,28 +168,28 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-16 text-center md:text-left mb-16">
             <div className="flex flex-col gap-4">
               <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
-                A Singular Commission
+                By Selection Only
               </h4>
               <p className="font-sans text-cream/70 text-sm leading-relaxed">
-                An ongoing exploration of texture, form, and earth. We release our masterworks as completely unique, one-of-one studies in spatial design. Each piece is an absolute original—once placed, it is never woven again.
+                To celebrate our bespoke journey, we are releasing our own special Zero Latex &ldquo;5 Homes&rdquo; collection.
               </p>
             </div>
 
             <div className="flex flex-col gap-4">
               <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
-                The Weight of One
+                Handtuft &amp; One of 1
               </h4>
               <p className="font-sans text-cream/70 text-sm leading-relaxed">
-                Our looms move at the pace of heritage. Because of the profound hand-tufted density and the intensive, unhurried months required to craft every square foot, our designs are realized strictly as singular editions, reserved for one home only.
+                Crafted at an extraordinary 4000 GSM heavyweight density using 100% NZ (New Zealand) wool, each hand-tufted &ldquo;One of 1&rdquo; masterpiece offers unparalleled thickness, luxury, and heritage-level weight, complete with certification of design ownership and value for the discerning aesthete.
               </p>
             </div>
 
             <div className="flex flex-col gap-4">
               <h4 className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase border-b border-sage/20 pb-4">
-                The Sanctuary Preview
+                Zero Latex &amp; Wet Backing
               </h4>
               <p className="font-sans text-cream/70 text-sm leading-relaxed">
-                The true measure of a masterpiece is how it holds a room. Experience the Grounded Try-Out within your own architecture. We invite you to live with a singular work, allowing its weight to anchor your space before claiming its legacy.
+                For our handwoven creations, every technique is done with Zero Latex, utilizing natural wet backing to ensure a completely chemical-free, organic, and truly grounded foundation.
               </p>
             </div>
           </div>
@@ -200,7 +200,7 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
               style={{ transform: fillActive ? 'translateY(0%)' : 'translateY(100%)' }}
             />
             <p className="relative z-10 font-sans font-bold text-cream text-xs md:text-sm tracking-[0.2em] uppercase">
-              Host the unseen. Before the five are gone.
+              Zero Latex · 4000 GSM · Only 5 Homes
             </p>
           </div>
         </div>
