@@ -39,7 +39,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={cn(anton.variable, heebo.variable, hindSiliguri.variable, "font-sans", geist.variable)} data-scroll-behavior="smooth" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <Providers>
           {children}
           {/* Noise texture overlay — real element so pointer-events: none actually works on mobile */}

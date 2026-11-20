@@ -41,8 +41,10 @@ export interface FeaturedProduct {
   }
   stockCount?: number
   isOneOfOne?: boolean
-  /** Only used for "One of 1" pieces; regular products always show price. */
+  /** Show the price on the product card (set per product in admin). */
   showPrice?: boolean
+  /** Show the "N available" stock count on the card (default true). */
+  showStock?: boolean
 }
 
 // ─── Hardcoded Fallbacks (original data) ─────────────────────
@@ -120,6 +122,7 @@ export const FALLBACK_FEATURED: FeaturedProduct[] = [
     features: ['GoodWeave® certified — no child labour', 'Natural, undyed wool with vegetable-dyed accents', 'Anti-slip backing included', 'Moth and stain resistant treatment', 'Comes with complimentary rug pad'],
     delivery: { estimate: '5–7 business days (Metro cities) · 8–12 business days (Rest of India)', shippingCost: 'Free shipping across India', returnPolicy: '30-day no-questions-asked return policy. Free reverse pickup.' },
     stockCount: 0,
+    showPrice: true,
   },
   {
     id: 'fp-ember',
@@ -141,6 +144,7 @@ export const FALLBACK_FEATURED: FeaturedProduct[] = [
     features: ['Reversible design — two looks in one', 'Eco-friendly natural fibres', 'Hypoallergenic and pet friendly', 'Lightweight and easy to move', 'Non-toxic AZO-free dyes'],
     delivery: { estimate: '3–5 business days (Metro cities) · 6–10 business days (Rest of India)', shippingCost: 'Free shipping across India', returnPolicy: '30-day no-questions-asked return policy. Free reverse pickup.' },
     stockCount: 0,
+    showPrice: true,
   },
 ]
 
@@ -222,6 +226,7 @@ export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
       stockCount: row.stock_count ?? 0,
       isOneOfOne: row.is_one_of_one === true,
       showPrice: row.show_price === true,
+      showStock: row.show_stock !== false,
     }))
 
     // In-stock products always on top
@@ -278,6 +283,7 @@ export async function getFeaturedProductById(productId: string): Promise<Feature
       stockCount: data.stock_count ?? 0,
       isOneOfOne: data.is_one_of_one === true,
       showPrice: data.show_price === true,
+      showStock: data.show_stock !== false,
     }
   } catch {
     return FALLBACK_FEATURED.find(p => p.id === productId) ?? null

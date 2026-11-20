@@ -87,7 +87,7 @@ function ProductCard({
             >
               {product.malayalamName || product.name}
             </h3>
-            {product.price > 0 && (!product.isOneOfOne || product.showPrice) && (
+            {product.price > 0 && product.showPrice && (
               <span className="font-sans font-bold text-forest text-lg">
                 ₹{product.price.toLocaleString('en-IN')}
               </span>
@@ -102,11 +102,11 @@ function ProductCard({
             <p className="font-sans text-xs text-forest/40 tracking-wide">
               Claimed · Once placed, never woven again.
             </p>
-          ) : (
+          ) : product.showStock !== false ? (
             <p className="font-sans text-xs text-forest/60 tracking-wide font-medium">
               {stockCount === 1 ? 'Only 1 available' : `${stockCount} available`}
             </p>
-          )}
+          ) : null}
         </div>
 
         <div className="mt-auto pt-6 border-t border-forest/10">
@@ -372,7 +372,11 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
             )}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-20">
               {regularProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onInquire={setInquiryPiece} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  onInquire={setInquiryPiece}
+                />
               ))}
             </div>
           </div>

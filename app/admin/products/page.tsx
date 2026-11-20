@@ -32,6 +32,7 @@ interface ProductRow {
   sort_order: number
   is_one_of_one?: boolean
   show_price?: boolean
+  show_stock?: boolean
 }
 
 interface StockEntry {
@@ -396,6 +397,13 @@ export default function AdminProductsPage() {
     fetchProducts()
   }
 
+  const toggleDisplay = async (p: ProductRow, key: 'show_price' | 'show_stock') => {
+    const current = key === 'show_price' ? p.show_price === true : p.show_stock !== false
+    const { error } = await supabase.from('featured_products').update({ [key]: !current }).eq('id', p.id)
+    if (error) alert('Failed to update: ' + error.message)
+    fetchProducts()
+  }
+
   const deleteProduct = async (id: string) => {
     if (!confirm('Remove this product permanently?')) return
     await supabase.from('featured_products').delete().eq('id', id)
@@ -445,6 +453,8 @@ export default function AdminProductsPage() {
     low_stock_threshold: 5,
     is_visible: true,
     sort_order: products.length + 1,
+    show_price: true,
+    show_stock: true,
   })
 
   const stockColor = (count: number, threshold: number) => {
@@ -592,8 +602,8 @@ export default function AdminProductsPage() {
                 <span className="block font-sans text-forest/40 text-xs mt-1">Lists it under &ldquo;One of 1&rdquo; with &ldquo;Inquire to Acquire&rdquo; (bid form) instead of &ldquo;Bring It Home&rdquo;.</span>
               </span>
             </label>
-            {editing.is_one_of_one === true && (
-              <label className="flex items-start gap-3 bg-cream border border-forest/10 rounded-xl px-4 py-3 cursor-pointer ml-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <label className="flex items-start gap-3 bg-cream border border-forest/10 rounded-xl px-4 py-3 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={editing.show_price === true}
@@ -602,10 +612,22 @@ export default function AdminProductsPage() {
                 />
                 <span>
                   <span className="block font-sans font-bold text-forest text-xs tracking-[0.15em] uppercase">Show price</span>
-                  <span className="block font-sans text-forest/40 text-xs mt-1">Display the price on the &ldquo;One of 1&rdquo; card. Off by default.</span>
+                  <span className="block font-sans text-forest/40 text-xs mt-1">Display the price on this product&rsquo;s card.</span>
                 </span>
               </label>
-            )}
+              <label className="flex items-start gap-3 bg-cream border border-forest/10 rounded-xl px-4 py-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={editing.show_stock !== false}
+                  onChange={(e) => setEditing({ ...editing, show_stock: e.target.checked })}
+                  className="mt-0.5 h-4 w-4 accent-forest"
+                />
+                <span>
+                  <span className="block font-sans font-bold text-forest text-xs tracking-[0.15em] uppercase">Show stock</span>
+                  <span className="block font-sans text-forest/40 text-xs mt-1">Display &ldquo;N available&rdquo;. Sold out still shows as Sold Out.</span>
+                </span>
+              </label>
+            </div>
             <div>
               <label className="block font-sans font-bold text-forest/50 text-xs tracking-[0.15em] uppercase mb-2">Description</label>
               <textarea
@@ -664,6 +686,7 @@ export default function AdminProductsPage() {
           </button>
         </div>
 
+
         <div className="space-y-12">
         {[
           {
@@ -692,7 +715,7 @@ export default function AdminProductsPage() {
             </div>
             {group.oneOfOne && (
               <button
-                onClick={() => setEditing({ ...newProduct(), is_one_of_one: true })}
+                onClick={() => setEditing({ ...newProduct(), is_one_of_one: true, show_price: false })}
                 className="bg-forest/5 text-forest font-sans font-bold text-xs tracking-[0.15em] uppercase px-4 py-2.5 rounded-xl hover:bg-forest/10 transition-colors"
               >
                 + Add One of 1
@@ -739,9 +762,7 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-3 sm:px-6 py-3 font-sans text-forest text-sm font-bold whitespace-nowrap">
                       ₹{p.price.toLocaleString('en-IN')}
-                      {group.oneOfOne && !p.show_price && (
-                        <span className="block font-normal text-[10px] text-forest/40 tracking-wide">Hidden on site</span>
-                      )}
+                      <DisplayToggle shown={p.show_price === true} onClick={() => toggleDisplay(p, 'show_price')} />
                     </td>
                     <td className="px-3 sm:px-6 py-3">
                       <button
@@ -754,6 +775,7 @@ export default function AdminProductsPage() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
                       </button>
+                      <DisplayToggle shown={p.show_stock !== false} onClick={() => toggleDisplay(p, 'show_stock')} />
                     </td>
                     <td className="px-3 sm:px-6 py-3">
                       <span className={`inline-flex font-sans font-bold text-xs px-2 py-1 rounded-full ${p.is_visible ? 'bg-green-100 text-green-700' : 'bg-forest/10 text-forest/40'}`}>
@@ -784,6 +806,19 @@ export default function AdminProductsPage() {
         </div>
       </div>
     </>
+  )
+}
+
+function DisplayToggle({ shown, onClick }: { shown: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={shown ? 'Shown on site — click to hide' : 'Hidden on site — click to show'}
+      className={`block mt-1 font-sans font-normal text-[10px] tracking-wide underline-offset-2 hover:underline ${shown ? 'text-green-700' : 'text-forest/40'}`}
+    >
+      {shown ? '● Shown on site' : '○ Hidden on site'}
+    </button>
   )
 }
 
