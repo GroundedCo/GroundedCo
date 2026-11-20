@@ -40,6 +40,9 @@ export interface FeaturedProduct {
     returnPolicy: string
   }
   stockCount?: number
+  isOneOfOne?: boolean
+  /** Only used for "One of 1" pieces; regular products always show price. */
+  showPrice?: boolean
 }
 
 // ─── Hardcoded Fallbacks (original data) ─────────────────────
@@ -217,6 +220,8 @@ export async function getFeaturedProducts(): Promise<FeaturedProduct[]> {
         returnPolicy: row.delivery_return ?? '',
       },
       stockCount: row.stock_count ?? 0,
+      isOneOfOne: row.is_one_of_one === true,
+      showPrice: row.show_price === true,
     }))
 
     // In-stock products always on top
@@ -271,6 +276,8 @@ export async function getFeaturedProductById(productId: string): Promise<Feature
         returnPolicy: data.delivery_return ?? '',
       },
       stockCount: data.stock_count ?? 0,
+      isOneOfOne: data.is_one_of_one === true,
+      showPrice: data.show_price === true,
     }
   } catch {
     return FALLBACK_FEATURED.find(p => p.id === productId) ?? null

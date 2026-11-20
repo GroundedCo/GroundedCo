@@ -2,12 +2,21 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import type { FeaturedProduct } from '@/data/products'
+import OneOfOneInquiryModal, { type OneOfOnePiece } from './OneOfOneInquiryModal'
 
+function pieceName(product: FeaturedProduct) {
+  return product.malayalamName ? `${product.name} (${product.malayalamName})` : product.name
+}
 
-
-function ProductCard({ product }: { product: FeaturedProduct }) {
+function ProductCard({
+  product,
+  onInquire,
+}: {
+  product: FeaturedProduct
+  onInquire: (piece: OneOfOnePiece) => void
+}) {
   const allPhotos = [product.image, ...product.photos].filter(Boolean)
   const [photoIndex, setPhotoIndex] = useState(0)
 
@@ -78,7 +87,7 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
             >
               {product.malayalamName || product.name}
             </h3>
-            {product.price && (
+            {product.price > 0 && (!product.isOneOfOne || product.showPrice) && (
               <span className="font-sans font-bold text-forest text-lg">
                 ₹{product.price.toLocaleString('en-IN')}
               </span>
@@ -108,6 +117,17 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
             >
               Sold Out
             </button>
+          ) : product.isOneOfOne ? (
+            <button
+              type="button"
+              data-piece-name={pieceName(product)}
+              aria-haspopup="dialog"
+              aria-controls="one-of-one-inquiry-modal"
+              onClick={() => onInquire({ id: product.id, name: pieceName(product) })}
+              className="block w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest text-cream px-8 py-4 rounded-[2.5rem] hover:bg-sage hover:text-forest transition-colors duration-300 relative z-30"
+            >
+              Inquire to Acquire
+            </button>
           ) : (
             <Link
               href={`/checkout/${product.id}`}
@@ -122,6 +142,111 @@ function ProductCard({ product }: { product: FeaturedProduct }) {
   )
 }
 
+const PROVENANCE = [
+  'Full ownership of the design',
+  'Grounded Loyal Aesthete certification',
+  'Share in respect of original art',
+]
+
+/** Large showcase card for "One of 1" pieces. */
+function SpotlightCard({
+  product,
+  onInquire,
+}: {
+  product: FeaturedProduct
+  onInquire: (piece: OneOfOnePiece) => void
+}) {
+  const allPhotos = [product.image, ...product.photos].filter(Boolean)
+  const [photoIndex, setPhotoIndex] = useState(0)
+  const stockCount = typeof product.stockCount === 'number' ? product.stockCount : 0
+  const isPlaced = stockCount === 0
+  const showPrice = product.price > 0 && product.showPrice
+
+  return (
+    <div className="group relative z-20 grid grid-cols-1 lg:grid-cols-[1.15fr_1fr] bg-cream rounded-[2.5rem] md:rounded-[3rem] overflow-hidden border border-sage/40 shadow-[0_40px_120px_-30px_rgba(0,0,0,0.6)] ring-1 ring-sage/20">
+      {/* Image */}
+      <div className="relative p-4 lg:p-5">
+        <div
+          className="relative aspect-[4/3] lg:aspect-auto lg:h-full lg:min-h-[480px] w-full overflow-hidden rounded-[2rem] md:rounded-[2.5rem] cursor-pointer"
+          onClick={allPhotos.length > 1 ? () => setPhotoIndex((i) => (i + 1) % allPhotos.length) : undefined}
+          title={allPhotos.length > 1 ? 'Click to see more photos' : undefined}
+        >
+          <Image
+            src={allPhotos[photoIndex] || '/placeholder.png'}
+            alt={product.name}
+            fill
+            sizes="(max-width: 1024px) 100vw, 55vw"
+            className={`object-cover transition-transform duration-700 group-hover:scale-105 ${isPlaced ? 'opacity-70' : ''}`}
+          />
+          <span className="absolute top-5 left-5 font-sans font-bold text-[11px] tracking-[0.25em] uppercase bg-forest text-cream px-4 py-2 rounded-full">
+            One of 1
+          </span>
+          {allPhotos.length > 1 && (
+            <div className="absolute bottom-4 right-4 flex gap-1.5">
+              {allPhotos.map((_, i) => (
+                <span key={i} className={`block w-1.5 h-1.5 rounded-full transition-colors duration-300 ${i === photoIndex ? 'bg-cream' : 'bg-cream/40'}`} />
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Details */}
+      <div className="flex flex-col px-8 pb-10 pt-4 lg:p-12">
+        {product.badge && (
+          <p className="font-sans font-bold text-forest/50 text-xs tracking-[0.2em] uppercase mb-4">{product.badge}</p>
+        )}
+        <h3 itemProp="name" className="font-display text-forest text-6xl md:text-7xl uppercase tracking-tighter leading-[0.85]">
+          {product.malayalamName || product.name}
+        </h3>
+        {product.malayalamName && (
+          <p className="font-sans font-bold text-forest/60 text-sm tracking-[0.2em] uppercase mt-3">{product.name}</p>
+        )}
+        <p className="font-sans font-bold text-forest/50 text-sm tracking-wide mt-4">{product.subtitle}</p>
+
+        <ul className="mt-8 space-y-3 border-t border-forest/10 pt-6">
+          {PROVENANCE.map((line) => (
+            <li key={line} className="flex items-center gap-3 font-sans text-sm text-forest/75">
+              <span aria-hidden="true" className="h-1.5 w-1.5 shrink-0 rounded-full bg-sage" />
+              {line}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-auto pt-10">
+          <div className="flex items-baseline justify-between gap-4 mb-5">
+            <p className="font-sans text-xs text-forest/50 tracking-[0.15em] uppercase font-bold">
+              {isPlaced ? 'Placed · Never woven again' : 'Offered by private placement'}
+            </p>
+            {showPrice && (
+              <span className="font-sans font-bold text-forest text-lg">₹{product.price.toLocaleString('en-IN')}</span>
+            )}
+          </div>
+          {isPlaced ? (
+            <button
+              disabled
+              className="block w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest/10 text-forest/30 px-8 py-5 rounded-[2.5rem] cursor-not-allowed"
+            >
+              Placed
+            </button>
+          ) : (
+            <button
+              type="button"
+              data-piece-name={pieceName(product)}
+              aria-haspopup="dialog"
+              aria-controls="one-of-one-inquiry-modal"
+              onClick={() => onInquire({ id: product.id, name: pieceName(product) })}
+              className="block w-full text-center font-sans font-bold text-xs md:text-sm tracking-[0.25em] uppercase bg-forest text-cream px-8 py-5 rounded-[2.5rem] hover:bg-sage hover:text-forest transition-colors duration-300 relative z-30"
+            >
+              Inquire to Acquire
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 interface TryItOutSectionProps {
   products?: FeaturedProduct[]
 }
@@ -129,6 +254,8 @@ interface TryItOutSectionProps {
 export default function TryItOutSection({ products = [] }: TryItOutSectionProps) {
   const pillRef = useRef<HTMLDivElement>(null)
   const [fillActive, setFillActive] = useState(false)
+  const [inquiryPiece, setInquiryPiece] = useState<OneOfOnePiece | null>(null)
+  const closeInquiry = useCallback(() => setInquiryPiece(null), [])
 
   const safeProducts = Array.isArray(products) ? products : []
 
@@ -138,6 +265,8 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
     const bInStock = (b.stockCount ?? 0) > 0 ? 1 : 0
     return bInStock - aInStock
   })
+  const regularProducts = sortedProducts.filter((p) => !p.isOneOfOne)
+  const oneOfOneProducts = sortedProducts.filter((p) => p.isOneOfOne)
 
   useEffect(() => {
     const el = pillRef.current
@@ -200,17 +329,51 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
               style={{ transform: fillActive ? 'translateY(0%)' : 'translateY(100%)' }}
             />
             <p className="relative z-10 font-sans font-bold text-cream text-xs md:text-sm tracking-[0.2em] uppercase">
-              Zero Latex · 4000 GSM · Only 5 Homes
+              Just the earth, underfoot
             </p>
           </div>
         </div>
 
-        {/* Product cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-20">
-          {sortedProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {/* "One of 1" — the star of the section */}
+        {oneOfOneProducts.length > 0 && (
+          <div id="one-of-one">
+            <div className="mb-14 text-center">
+              <p className="font-sans font-bold text-sage text-xs tracking-[0.25em] uppercase mb-5">
+                By Private Placement
+              </p>
+              <h3 className="font-display text-cream text-[18vw] md:text-[9rem] uppercase tracking-tighter leading-[0.8]">
+                One of 1
+              </h3>
+              <p className="font-sans text-cream/65 text-sm md:text-base leading-relaxed max-w-lg mx-auto mt-6">
+                Singular hand-tufted works, never woven again. Each placement is offered by inquiry and reviewed privately by our studio.
+              </p>
+            </div>
+            <div className="space-y-12">
+              {oneOfOneProducts.map((product) => (
+                <SpotlightCard key={product.id} product={product} onInquire={setInquiryPiece} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Regular product cards */}
+        {regularProducts.length > 0 && (
+          <div className={oneOfOneProducts.length > 0 ? 'mt-28' : ''}>
+            {oneOfOneProducts.length > 0 && (
+              <div className="mb-12 text-center">
+                <p className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase mb-4">The Collection</p>
+                <h3 className="font-display text-cream text-5xl md:text-6xl uppercase tracking-tighter leading-[0.9]">
+                  Bring It Home
+                </h3>
+              </div>
+            )}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-20">
+              {regularProducts.map((product) => (
+                <ProductCard key={product.id} product={product} onInquire={setInquiryPiece} />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Trust badge */}
         <div className="mt-16 flex items-center justify-center gap-3">
@@ -223,6 +386,7 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
         </div>
       </div>
     </section>
+    <OneOfOneInquiryModal piece={inquiryPiece} onClose={closeInquiry} />
   </div>
   )
 }

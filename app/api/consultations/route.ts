@@ -1,5 +1,6 @@
-import { createHmac, randomUUID } from 'node:crypto'
+import { randomUUID } from 'node:crypto'
 
+import { getClientIp, hashClientIp } from '@/lib/client-ip'
 import { createServerClient } from '@/lib/supabase/server'
 import { notifyConsultationOnTelegram } from '@/lib/telegram'
 
@@ -16,19 +17,6 @@ const IMAGE_TYPES = new Map([
 function readText(formData: FormData, key: string) {
   const value = formData.get(key)
   return typeof value === 'string' ? value.trim() : ''
-}
-
-function getClientIp(request: Request) {
-  const realIp = request.headers.get('x-real-ip')?.trim()
-  if (realIp) return realIp
-
-  return request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || null
-}
-
-function hashClientIp(ip: string) {
-  const secret = process.env.SUPABASE_SERVICE_ROLE_KEY
-  if (!secret) throw new Error('Missing required environment variable: SUPABASE_SERVICE_ROLE_KEY')
-  return createHmac('sha256', secret).update(ip).digest('hex')
 }
 
 function hasExpectedImageSignature(bytes: Buffer, type: string) {

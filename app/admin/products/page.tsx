@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import ImageUpload from '@/components/admin/ImageUpload'
 
@@ -29,6 +30,8 @@ interface ProductRow {
   low_stock_threshold: number
   is_visible: boolean
   sort_order: number
+  is_one_of_one?: boolean
+  show_price?: boolean
 }
 
 interface StockEntry {
@@ -577,6 +580,32 @@ export default function AdminProductsPage() {
               />
             </div>
             <Field label="Badge" value={editing.badge} onChange={(v) => setEditing({ ...editing, badge: v })} placeholder="e.g. Best Seller, New Arrival" />
+            <label className="flex items-start gap-3 bg-cream border border-forest/10 rounded-xl px-4 py-3 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={editing.is_one_of_one === true}
+                onChange={(e) => setEditing({ ...editing, is_one_of_one: e.target.checked })}
+                className="mt-0.5 h-4 w-4 accent-forest"
+              />
+              <span>
+                <span className="block font-sans font-bold text-forest text-xs tracking-[0.15em] uppercase">&ldquo;One of 1&rdquo; piece</span>
+                <span className="block font-sans text-forest/40 text-xs mt-1">Lists it under &ldquo;One of 1&rdquo; with &ldquo;Inquire to Acquire&rdquo; (bid form) instead of &ldquo;Bring It Home&rdquo;.</span>
+              </span>
+            </label>
+            {editing.is_one_of_one === true && (
+              <label className="flex items-start gap-3 bg-cream border border-forest/10 rounded-xl px-4 py-3 cursor-pointer ml-6">
+                <input
+                  type="checkbox"
+                  checked={editing.show_price === true}
+                  onChange={(e) => setEditing({ ...editing, show_price: e.target.checked })}
+                  className="mt-0.5 h-4 w-4 accent-forest"
+                />
+                <span>
+                  <span className="block font-sans font-bold text-forest text-xs tracking-[0.15em] uppercase">Show price</span>
+                  <span className="block font-sans text-forest/40 text-xs mt-1">Display the price on the &ldquo;One of 1&rdquo; card. Off by default.</span>
+                </span>
+              </label>
+            )}
             <div>
               <label className="block font-sans font-bold text-forest/50 text-xs tracking-[0.15em] uppercase mb-2">Description</label>
               <textarea
@@ -635,6 +664,49 @@ export default function AdminProductsPage() {
           </button>
         </div>
 
+        <div className="space-y-12">
+        {[
+          {
+            key: 'regular',
+            title: 'Products',
+            hint: 'Bought directly with “Bring It Home”.',
+            items: products.filter((p) => !p.is_one_of_one),
+            oneOfOne: false,
+          },
+          {
+            key: 'one-of-one',
+            title: 'One of 1',
+            hint: 'Listed separately on the site with “Inquire to Acquire”.',
+            items: products.filter((p) => p.is_one_of_one),
+            oneOfOne: true,
+          },
+        ].map((group) => (
+        <section key={group.key}>
+          <div className="flex flex-wrap items-end justify-between gap-3 mb-4">
+            <div>
+              <h2 className="font-display text-forest text-2xl uppercase tracking-tighter">
+                {group.title}
+                <span className="ml-2 align-middle font-sans font-bold text-xs tracking-normal text-forest/40">{group.items.length}</span>
+              </h2>
+              <p className="font-sans text-forest/40 text-xs mt-0.5">{group.hint}</p>
+            </div>
+            {group.oneOfOne && (
+              <button
+                onClick={() => setEditing({ ...newProduct(), is_one_of_one: true })}
+                className="bg-forest/5 text-forest font-sans font-bold text-xs tracking-[0.15em] uppercase px-4 py-2.5 rounded-xl hover:bg-forest/10 transition-colors"
+              >
+                + Add One of 1
+              </button>
+            )}
+          </div>
+
+        {group.items.length === 0 ? (
+          <div className="bg-cream rounded-2xl border border-dashed border-forest/15 px-6 py-8 text-center font-sans text-forest/40 text-sm">
+            {group.oneOfOne
+              ? 'No “One of 1” pieces yet. Add one, or tick “One of 1” when editing a product.'
+              : 'No regular products.'}
+          </div>
+        ) : (
         <div className="bg-cream rounded-2xl border border-forest/10">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -651,7 +723,7 @@ export default function AdminProductsPage() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((p) => (
+                {group.items.map((p) => (
                   <tr key={p.id} className="border-b border-forest/5 last:border-0">
                     <td className="px-3 sm:px-6 py-3">
                       <div className="flex items-center gap-3">
@@ -665,7 +737,12 @@ export default function AdminProductsPage() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-3 sm:px-6 py-3 font-sans text-forest text-sm font-bold whitespace-nowrap">₹{p.price.toLocaleString('en-IN')}</td>
+                    <td className="px-3 sm:px-6 py-3 font-sans text-forest text-sm font-bold whitespace-nowrap">
+                      ₹{p.price.toLocaleString('en-IN')}
+                      {group.oneOfOne && !p.show_price && (
+                        <span className="block font-normal text-[10px] text-forest/40 tracking-wide">Hidden on site</span>
+                      )}
+                    </td>
                     <td className="px-3 sm:px-6 py-3">
                       <button
                         onClick={() => setStockProduct(p)}
@@ -685,6 +762,9 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-3 sm:px-6 py-3 text-right">
                       <div className="flex justify-end gap-1 sm:gap-2">
+                        {group.oneOfOne && (
+                          <Link href={`/admin/bids?product=${encodeURIComponent(p.id)}`} className="bg-sage/30 text-forest font-sans font-bold text-xs px-2 sm:px-3 py-2 rounded-lg hover:bg-sage/50 transition-colors">Bids</Link>
+                        )}
                         <button onClick={() => setEditing(p)} className="bg-forest/5 text-forest font-sans font-bold text-xs px-2 sm:px-3 py-2 rounded-lg hover:bg-forest/10 transition-colors">Edit</button>
                         <button onClick={() => toggleVisibility(p)} className="bg-forest/5 text-forest font-sans font-bold text-xs px-2 sm:px-3 py-2 rounded-lg hover:bg-forest/10 transition-colors">
                           {p.is_visible ? 'Hide' : 'Show'}
@@ -697,6 +777,10 @@ export default function AdminProductsPage() {
               </tbody>
             </table>
           </div>
+        </div>
+        )}
+        </section>
+        ))}
         </div>
       </div>
     </>
