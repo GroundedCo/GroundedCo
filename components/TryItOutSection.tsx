@@ -192,11 +192,14 @@ function SpotlightCard({
       </div>
 
       {/* Details */}
-      <div className="flex flex-col px-8 pb-10 pt-4 lg:p-12">
+      <div className="@container flex min-w-0 flex-col px-6 sm:px-8 pb-10 pt-4 lg:p-12">
         {product.badge && (
           <p className="font-sans font-bold text-forest/50 text-xs tracking-[0.2em] uppercase mb-4">{product.badge}</p>
         )}
-        <h3 itemProp="name" className="font-display text-forest text-6xl md:text-7xl uppercase tracking-tighter leading-[0.85]">
+        <h3
+          itemProp="name"
+          className="font-display text-forest text-[clamp(1.25rem,12cqi,4.5rem)] uppercase tracking-tighter leading-[1.1] [overflow-wrap:anywhere]"
+        >
           {product.malayalamName || product.name}
         </h3>
         {product.malayalamName && (
