@@ -207,6 +207,45 @@
   50%      { box-shadow: 0 0 0 12px rgba(26, 23, 20, 0); }
 }
 
+/* ─── Text Shine ("One of 1" heading) ──────────────────
+   A bright band sweeps across cream text, then rests.
+   Adapted from Uiverse.io (neerajbaniwal) "btn-shine": positions are in %
+   rather than a fixed 180px so the sweep scales with display-size type.
+   The resting state (0%) parks the band off the right edge, so with
+   reduced motion the text is plain cream. Vertical padding (cancelled by
+   negative margin) keeps the gradient covering glyphs that overflow a
+   tight line-height — background-clip:text can't paint outside the box. */
+.text-shine {
+  display: inline-block;
+  padding-block: 0.15em;
+  margin-block: -0.15em;
+  background-image: linear-gradient(110deg,
+      var(--color-cream) 42%,
+      #ffffff 48%,
+      var(--color-sage) 50%,
+      #ffffff 52%,
+      var(--color-cream) 58%);
+  background-size: 250% 100%;
+  background-position: 0% 0;
+  background-repeat: no-repeat;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: text-shine 3s linear infinite;
+}
+
+@keyframes text-shine {
+  0% {
+    background-position: 100% 0;
+  }
+
+  60%,
+  100% {
+    background-position: 0% 0;
+  }
+}
+
 /* Prevent animations from leaving elements stuck at opacity:0 */
 @media (prefers-reduced-motion: reduce) {
 

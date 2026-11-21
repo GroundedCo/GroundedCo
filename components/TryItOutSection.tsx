@@ -345,7 +345,7 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
                 By Private Placement
               </p>
               <h3 className="font-display text-cream text-[18vw] md:text-[9rem] uppercase tracking-tighter leading-[0.8]">
-                One of 1
+                <span className="text-shine">One of 1</span>
               </h3>
               <p className="font-sans text-cream/65 text-sm md:text-base leading-relaxed max-w-lg mx-auto mt-6">
                 Singular hand-tufted works, never woven again. Each placement is offered by inquiry and reviewed privately by our studio.
