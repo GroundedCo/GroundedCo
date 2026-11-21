@@ -1,8 +1,6 @@
 'use client'
 
-import * as React from "react";
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface AnimatedTextCycleProps {
   words: string[];
@@ -10,105 +8,92 @@ interface AnimatedTextCycleProps {
   className?: string;
 }
 
+// SSR-safe layout effect: measure before paint on the client, no-op on the server.
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+/**
+ * Cycles through `words`, cross-fading each one in place.
+ *
+ * Driven entirely by CSS transitions (no AnimatePresence / exit callbacks), so
+ * the cycle can never stall waiting for an animation-finished event — which is
+ * what froze it on some mobile browsers. Every word stays mounted, stacked in
+ * one grid cell; the container's width eases to the active word's measured
+ * width so surrounding inline text slides rather than jumps.
+ */
 export default function AnimatedTextCycle({
   words,
   interval = 5000,
   className = "",
 }: AnimatedTextCycleProps) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [width, setWidth] = useState("auto");
-  const measureRef = useRef<HTMLDivElement>(null);
+  const [tick, setTick] = useState(0);
+  const currentIndex = tick % words.length;
+  const prevIndex = tick > 0 ? (tick - 1) % words.length : null;
+  const [widths, setWidths] = useState<number[] | null>(null);
+  const measureRef = useRef<HTMLSpanElement>(null);
 
-  // Get the width of the current word
+  // Measure every word on its own line, never wrapped. Re-measure when the
+  // web font finishes loading or the text size changes at a breakpoint.
+  useIsoLayoutEffect(() => {
+    const el = measureRef.current;
+    if (!el) return;
+    const measure = () =>
+      setWidths(
+        Array.from(el.children).map((c) => Math.ceil(c.getBoundingClientRect().width))
+      );
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    document.fonts?.ready.then(measure).catch(() => {});
+    return () => ro.disconnect();
+  }, [words]);
+
   useEffect(() => {
-    if (measureRef.current) {
-      const elements = measureRef.current.children;
-      if (elements.length > currentIndex) {
-        // Add a small buffer (10px) to prevent text wrapping
-        const newWidth = elements[currentIndex].getBoundingClientRect().width;
-        setWidth(`${newWidth + 5}px`);
-      }
-    }
-  }, [currentIndex]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, interval);
-
+    if (words.length < 2) return;
+    const timer = setInterval(() => setTick((t) => t + 1), interval);
     return () => clearInterval(timer);
   }, [interval, words.length]);
 
-  // Container animation for the whole word
-  const containerVariants = {
-    hidden: {
-      y: -20,
-      opacity: 0,
-      filter: "blur(8px)"
-    },
-    visible: {
-      y: 0,
-      opacity: 1,
-      filter: "blur(0px)",
-      transition: {
-        duration: 0.4,
-        ease: "easeOut" as const
-      }
-    },
-    exit: {
-      y: 20,
-      opacity: 0,
-      filter: "blur(8px)",
-      transition: {
-        duration: 0.3,
-        ease: "easeIn" as const
-      }
-    },
-  } satisfies import('framer-motion').Variants
+  const width = widths?.[currentIndex];
 
   return (
-    <>
-      {/* Hidden measurement div with all words rendered */}
-      <div 
-        ref={measureRef} 
+    <span className="relative flex">
+      {/* Off-screen measurer: one non-wrapping line per word. */}
+      <span
+        ref={measureRef}
         aria-hidden="true"
-        className="absolute opacity-0 pointer-events-none"
-        style={{ visibility: "hidden" }}
+        className="pointer-events-none invisible absolute left-0 top-0 flex flex-col items-start whitespace-nowrap"
       >
         {words.map((word, i) => (
           <span key={i} className={`font-bold ${className}`}>
             {word}
           </span>
         ))}
-      </div>
+      </span>
 
-      {/* Visible animated word */}
-      <motion.span
-        className="relative inline-flex justify-center align-middle"
-        animate={{
-          width,
-          transition: { 
-            type: "spring",
-            stiffness: 150,
-            damping: 15,
-            mass: 1.2,
-          }
-        }}
+      <span
+        className="inline-grid grid-cols-[100%] justify-items-center transition-[width] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+        style={width ? { width } : undefined}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.span
-            key={currentIndex}
-            className={`inline-block font-bold ${className}`}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-            exit="exit"
-            style={{ whiteSpace: "nowrap" }}
-          >
-            {words[currentIndex]}
-          </motion.span>
-        </AnimatePresence>
-      </motion.span>
-    </>
+        {words.map((word, i) => {
+          const isActive = i === currentIndex;
+          const isLeaving = i === prevIndex;
+          return (
+            <span
+              key={i}
+              aria-hidden={!isActive}
+              className={`col-start-1 row-start-1 whitespace-nowrap font-bold ${className} transition-[opacity,transform,filter] motion-reduce:transition-none ${
+                isActive
+                  ? "translate-y-0 opacity-100 blur-0 duration-500 delay-150 ease-out"
+                  : isLeaving
+                    ? "translate-y-[0.9em] opacity-0 blur-[4px] duration-300 ease-in"
+                    : "-translate-y-[0.9em] opacity-0 blur-[4px] duration-0"
+              }`}
+            >
+              {word}
+            </span>
+          );
+        })}
+      </span>
+    </span>
   );
 }

@@ -4,24 +4,23 @@ import { getImageProps } from 'next/image'
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
 
-import heroPortrait from '@/public/images/hero-pasture-lounge.jpg'
-import heroWide from '@/public/images/hero-pasture-lounge-wide.jpg'
+import heroPortrait from '@/public/images/hero-rug-pasture-portrait.png'
+import heroWide from '@/public/images/hero-rug-pasture-wide.png'
 
 import ScrollIndicator from './ScrollIndicator'
 import AnimatedTextCycle from './AnimatedTextCycle'
 import { RevealText } from './RevealText'
 
 const heroAlt =
-  'Aerial view of a green sectional sofa and a handwoven wool rug arranged on open pasture at sunset, with sheep grazing beyond'
+  'Aerial view of a handwoven felted-wool rug laid on cracked earth in a pasture, with a live-edge wooden table, a woven pouf and a floor cushion with maroon pillows, as sheep graze nearby'
 
 export default function HeroSection() {
 
   // Two masters of the same photograph, picked on viewport *shape* rather than
   // width — the hero is full-bleed and full-height, so a 1024x768 tablet needs
-  // the same framing as a desktop, not the phone's. The portrait master is the
-  // whole composition (mountains, flock, lounge, cracked earth); the wide one
-  // is a 3:2 band around the sofa and rug, so landscape viewports get real
-  // pixels instead of a 2.6x upscale of the portrait. `<picture>` means each
+  // the same framing as a desktop, not the phone's. The portrait master is a
+  // tall crop of the rug with sheep above and boots below; the wide one is a
+  // 16:9 frame with the rug centred in open pasture. `<picture>` means each
   // viewport downloads exactly one of them.
   const common = { alt: heroAlt, sizes: '100vw', quality: 90 }
   const {
