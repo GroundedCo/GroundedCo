@@ -89,7 +89,7 @@ export default function HeroSection() {
             href="/consult"
             className="group inline-flex min-w-56 items-center justify-center gap-3 border border-sage bg-sage px-8 py-3.5 font-sans text-xs font-bold uppercase tracking-[0.28em] text-forest shadow-[0_8px_30px_rgba(204,213,174,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:border-maroon hover:bg-maroon hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream sm:text-sm"
           >
-            Consult
+            Speak to us
             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden="true" />
           </Link>
         </div>
