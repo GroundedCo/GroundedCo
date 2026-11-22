@@ -16,6 +16,10 @@ interface ContactSettings {
   story_text: string
 }
 
+// Studio address and its Google Maps place link (from the business's own share link).
+const STUDIO_ADDRESS = 'Puthiya Palli Masjid, Irumbichi Road, Mattancherry, Kochi, Kerala 682002'
+const STUDIO_MAP_URL = 'https://share.google/GAw7nR5Tb9vlD9cRM'
+
 // Only brand copy has fallbacks — contact details are never invented.
 const EMPTY: ContactSettings = {
   brand_name: '',
@@ -128,7 +132,6 @@ export default async function ContactPage() {
     .split(/\n+/)
     .map((p) => p.trim())
     .filter(Boolean)
-  const hasDetails = Boolean(whatsappDigits || contact.email || contact.location)
 
   return (
     <main className="min-h-screen bg-cream">
@@ -181,21 +184,14 @@ export default async function ContactPage() {
               value={contact.email.toLowerCase()}
             />
           )}
-          {contact.location && (
-            <ContactRow
-              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(contact.location)}`}
-              external
-              icon={icons.location}
-              label="Studio"
-              note="Find us"
-              value={contact.location}
-            />
-          )}
-          {!hasDetails && (
-            <p className="font-sans text-forest/50 text-base leading-relaxed border border-dashed border-forest/20 rounded-2xl px-8 py-10 text-center">
-              Contact details are coming soon.
-            </p>
-          )}
+          <ContactRow
+            href={STUDIO_MAP_URL}
+            external
+            icon={icons.location}
+            label="Studio"
+            note="Find us"
+            value={STUDIO_ADDRESS}
+          />
         </div>
       </section>
 
