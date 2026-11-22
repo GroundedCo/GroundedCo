@@ -455,7 +455,7 @@ export default function CheckoutClient({ product }: { product: FeaturedProduct }
     return (
       <div className="space-y-4 pt-2">
         <div className="w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-deep-obsidian/10 text-deep-obsidian/40 py-4 rounded-full cursor-not-allowed select-none">
-          Sold Out
+          Found its home
         </div>
         <p className="font-sans text-deep-obsidian/50 text-xs text-center tracking-wide">
           Claimed · Once placed, never woven again.

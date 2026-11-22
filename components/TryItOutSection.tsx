@@ -41,7 +41,7 @@ function ProductCard({
 
         {isOutOfStock && (
           <span className="font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest/80 text-cream px-4 py-2 rounded-full">
-            Sold Out
+            Anchored
           </span>
         )}
       </div>
@@ -115,7 +115,7 @@ function ProductCard({
               disabled
               className="block w-full text-center font-sans font-bold text-xs tracking-[0.2em] uppercase bg-forest/10 text-forest/30 px-8 py-4 rounded-[2.5rem] cursor-not-allowed"
             >
-              Sold Out
+              Found its home
             </button>
           ) : product.isOneOfOne ? (
             <button
