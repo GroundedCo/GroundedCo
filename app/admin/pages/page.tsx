@@ -2,10 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import ImageUpload from '@/components/admin/ImageUpload'
 
-type Tab = 'contact' | 'privacy' | 'shipping'
+type Tab = 'contact' | 'about' | 'privacy' | 'shipping'
 
 interface ContactSettings {
+  id?: string
   brand_name: string
   tagline: string
   email: string
@@ -29,6 +31,10 @@ const CONTACT_DEFAULTS: ContactSettings = {
   story_text: '',
 }
 
+interface AboutPage extends SitePage {
+  image_url: string
+}
+
 const PAGE_DEFAULTS: SitePage = { slug: '', title: '', content: '' }
 
 export default function AdminPagesPage() {
@@ -37,22 +43,37 @@ export default function AdminPagesPage() {
   const [contact, setContact] = useState<ContactSettings>(CONTACT_DEFAULTS)
   const [privacy, setPrivacy] = useState<SitePage>({ ...PAGE_DEFAULTS, slug: 'privacy', title: 'Privacy Policy' })
   const [shipping, setShipping] = useState<SitePage>({ ...PAGE_DEFAULTS, slug: 'shipping', title: 'Shipping & Delivery' })
+  const [about, setAbout] = useState<AboutPage>({ ...PAGE_DEFAULTS, slug: 'about', title: 'About Us', image_url: '' })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     let active = true
 
     supabase.from('contact_settings').select('*').limit(1).single()
-      .then(({ data }) => { if (active && data) setContact(data) })
+      .then(({ data }) => {
+        if (!active || !data) return
+        setContact({
+          id: data.id,
+          brand_name: data.brand_name ?? '',
+          tagline: data.tagline ?? '',
+          email: data.email ?? '',
+          whatsapp: data.whatsapp ?? '',
+          location: data.location ?? '',
+          story_text: data.story_text ?? '',
+        })
+      })
 
-    supabase.from('site_pages').select('*').in('slug', ['privacy', 'shipping'])
+    supabase.from('site_pages').select('*').in('slug', ['privacy', 'shipping', 'about'])
       .then(({ data }) => {
         if (!active || !data) return
         const p = data.find((r) => r.slug === 'privacy')
         const s = data.find((r) => r.slug === 'shipping')
-        if (p) setPrivacy(p)
-        if (s) setShipping(s)
+        const a = data.find((r) => r.slug === 'about')
+        if (p) setPrivacy({ slug: p.slug, title: p.title, content: p.content ?? '' })
+        if (s) setShipping({ slug: s.slug, title: s.title, content: s.content ?? '' })
+        if (a) setAbout({ slug: a.slug, title: a.title, content: a.content ?? '', image_url: a.image_url ?? '' })
       })
 
     return () => { active = false }
@@ -60,20 +81,38 @@ export default function AdminPagesPage() {
 
   const saveContact = async () => {
     setSaving(true)
-    const { error } = await supabase
-      .from('contact_settings')
-      .upsert(contact, { onConflict: 'brand_name' })
+    setError('')
+    // contact_settings is a single-row table: update the loaded row by its
+    // primary key, or create it if none exists yet.
+    const { id, ...fields } = contact
+    const { data, error } = id
+      ? await supabase.from('contact_settings').update(fields).eq('id', id).select().single()
+      : await supabase.from('contact_settings').insert(fields).select().single()
     setSaving(false)
-    if (!error) flash()
+    if (error) {
+      setError(error.message)
+      return
+    }
+    if (data) setContact((c) => ({ ...c, id: data.id }))
+    flash()
   }
 
-  const savePage = async (page: SitePage) => {
+  const savePage = async (page: SitePage | AboutPage) => {
     setSaving(true)
+    setError('')
     const { error } = await supabase
       .from('site_pages')
       .upsert({ ...page, updated_at: new Date().toISOString() }, { onConflict: 'slug' })
     setSaving(false)
-    if (!error) flash()
+    if (error) {
+      setError(
+        error.message.includes('image_url')
+          ? 'The About page needs a database update first: run supabase/about-page.sql.'
+          : error.message,
+      )
+      return
+    }
+    flash()
   }
 
   const flash = () => {
@@ -83,6 +122,7 @@ export default function AdminPagesPage() {
 
   const tabs: { key: Tab; label: string }[] = [
     { key: 'contact', label: 'Contact' },
+    { key: 'about', label: 'About' },
     { key: 'privacy', label: 'Privacy' },
     { key: 'shipping', label: 'Shipping' },
   ]
@@ -91,8 +131,12 @@ export default function AdminPagesPage() {
     <div className="max-w-3xl space-y-8">
       <div>
         <h1 className="font-display text-3xl uppercase tracking-tighter text-forest">Pages</h1>
-        <p className="font-sans text-forest/50 text-sm mt-1">Edit content shown on the Contact, Privacy, and Shipping pages.</p>
+        <p className="font-sans text-forest/50 text-sm mt-1">Edit content shown on the Contact, About, Privacy, and Shipping pages.</p>
       </div>
+
+      {error && (
+        <p className="font-sans text-sm text-maroon bg-maroon/5 border border-maroon/20 rounded-xl px-4 py-3">{error}</p>
+      )}
 
       {/* Tabs */}
       <div className="flex gap-1 bg-forest/10 rounded-xl p-1 w-fit">
@@ -146,6 +190,41 @@ export default function AdminPagesPage() {
         </div>
       )}
 
+      {/* About tab */}
+      {tab === 'about' && (
+        <div className="space-y-5">
+          <div className="space-y-1.5">
+            <label className="font-sans font-bold text-forest/60 text-xs tracking-[0.15em] uppercase">Banner Image</label>
+            <p className="font-sans text-forest/40 text-xs">Shown full-width at the top of the About page. Wide (16:9) photos work best.</p>
+            <ImageUpload
+              key={about.image_url || 'empty'}
+              currentUrl={about.image_url}
+              folder="about"
+              aspect={16 / 9}
+              onUpload={(url) => setAbout((a) => ({ ...a, image_url: url }))}
+            />
+            {about.image_url && (
+              <button
+                type="button"
+                onClick={() => setAbout((a) => ({ ...a, image_url: '' }))}
+                className="font-sans font-bold text-forest/40 text-[10px] tracking-[0.15em] uppercase hover:text-maroon transition-colors"
+              >
+                Remove image
+              </button>
+            )}
+          </div>
+
+          <PageEditor
+            page={about}
+            onChange={(p) => setAbout((a) => ({ ...a, ...p }))}
+            saving={saving}
+            saved={saved}
+            onSave={() => savePage(about)}
+            hint="Leave a blank line between paragraphs. Wrap text in **double asterisks** to make it bold."
+          />
+        </div>
+      )}
+
       {/* Privacy tab */}
       {tab === 'privacy' && (
         <PageEditor page={privacy} onChange={setPrivacy} saving={saving} saved={saved} onSave={() => savePage(privacy)} />
@@ -165,12 +244,14 @@ function PageEditor({
   saving,
   saved,
   onSave,
+  hint = 'Use # or ## for headings. Leave blank lines between paragraphs.',
 }: {
   page: SitePage
   onChange: (p: SitePage) => void
   saving: boolean
   saved: boolean
   onSave: () => void
+  hint?: string
 }) {
   return (
     <div className="space-y-5">
@@ -186,7 +267,7 @@ function PageEditor({
 
       <div className="space-y-1.5">
         <label className="font-sans font-bold text-forest/60 text-xs tracking-[0.15em] uppercase">Content</label>
-        <p className="font-sans text-forest/40 text-xs">Use # or ## for headings. Leave blank lines between paragraphs.</p>
+        <p className="font-sans text-forest/40 text-xs">{hint}</p>
         <textarea
           rows={16}
           value={page.content}

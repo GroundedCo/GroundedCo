@@ -2,6 +2,7 @@ export default function SubFooter() {
   const year = new Date().getFullYear()
 
   const links = [
+    { label: 'About', href: '/about' },
     { label: 'Contact', href: '/contact' },
     { label: 'Privacy', href: '/privacy' },
     { label: 'Shipping', href: '/shipping' },
