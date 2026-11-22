@@ -11,6 +11,7 @@ const navItems = [
   { href: '/admin/orders',   label: 'Orders',    icon: '◻' },
   { href: '/admin/consultations', label: 'Consultations', icon: '◇' },
   { href: '/admin/bids',     label: 'One of 1 Bids', icon: '◆' },
+  { href: '/admin/partners', label: 'Spatial Partners', icon: '◬' },
   { href: '/admin/invoices', label: 'Invoices',  icon: '◫' },
   { href: '/admin/products', label: 'Products',  icon: '▣' },
   { href: '/admin/carousel', label: 'Carousel',  icon: '◎' },

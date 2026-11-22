@@ -79,12 +79,12 @@ export default function HeroSection() {
         </p>
 
         <div className="animate-hero-fade-up flex flex-col items-center gap-3" style={{ animationDelay: '0.36s' }}>
-          <a
-            href="#collection"
+          <Link
+            href="/spatial-partners"
             className="inline-block border border-cream/70 text-cream font-sans font-bold text-sm sm:text-base tracking-[0.2em] uppercase px-10 sm:px-12 py-4 sm:py-5 hover:bg-cream hover:text-forest transition-all duration-300 active:bg-cream active:text-forest"
           >
-            Explore the Collection
-          </a>
+            Spatial Partner Registry
+          </Link>
           <Link
             href="/consult"
             className="group inline-flex min-w-56 items-center justify-center gap-3 border border-sage bg-sage px-8 py-3.5 font-sans text-xs font-bold uppercase tracking-[0.28em] text-forest shadow-[0_8px_30px_rgba(204,213,174,0.25)] transition-all duration-300 hover:-translate-y-0.5 hover:border-maroon hover:bg-maroon hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cream sm:text-sm"
