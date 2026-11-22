@@ -364,9 +364,9 @@ export default function TryItOutSection({ products = [] }: TryItOutSectionProps)
           <div className={oneOfOneProducts.length > 0 ? 'mt-28' : ''}>
             {oneOfOneProducts.length > 0 && (
               <div className="mb-12 text-center">
-                <p className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase mb-4">The Collection</p>
+                <p className="font-sans font-bold text-sage text-xs tracking-[0.2em] uppercase mb-4">Grounded Living</p>
                 <h3 className="font-display text-cream text-5xl md:text-6xl uppercase tracking-tighter leading-[0.9]">
-                  Bring It Home
+                  Quiet by Nature
                 </h3>
               </div>
             )}
